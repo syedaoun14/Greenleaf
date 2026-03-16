@@ -3,1279 +3,460 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>GreenLeaf Smart Plant Nursery – by Rania</title>
+<title>GreenLeaf Admin Panel – Rania</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
 :root{
-  --g1:#0e2318;--g2:#1c4030;--g3:#2d6a4f;--g4:#52b788;--g5:#b7e4c7;--g6:#d8f3dc;
-  --cream:#faf6ef;--warm:#f5ede0;--terra:#c07050;--gold:#c9a84c;--white:#ffffff;
+  --g1:#0e2318;--g2:#1c4030;--g3:#2d6a4f;--g4:#52b788;--g5:#b7e4c7;
+  --cream:#faf6ef;--warm:#f5ede0;--terra:#c07050;--gold:#c9a84c;
+  --sidebar-w:260px;--nav-h:66px;
+  --bg:#f0f5f2;--card-bg:#ffffff;
   --txt1:#0e1f15;--txt2:#2d4a38;--txt3:#6b8070;
-  --shadow:0 8px 32px rgba(14,35,24,.13);
-  --r:18px;
+  --border:#e0ead8;--red:#e05555;--blue:#4a90e2;--orange:#e88a30;
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 html{scroll-behavior:smooth}
-body{font-family:'Jost',sans-serif;background:var(--cream);color:var(--txt1);overflow-x:hidden}
+body{font-family:'Jost',sans-serif;background:var(--bg);color:var(--txt1)}
+::-webkit-scrollbar{width:6px}
+::-webkit-scrollbar-thumb{background:var(--g4);border-radius:3px}
 
-/* ====== SCROLLBAR ====== */
-::-webkit-scrollbar{width:7px}
-::-webkit-scrollbar-track{background:var(--g1)}
-::-webkit-scrollbar-thumb{background:var(--g4);border-radius:4px}
+/* ====== LOGIN SCREEN ====== */
+#loginScreen{
+  position:fixed;inset:0;background:linear-gradient(160deg,#06130d,#0e2318,#0b1e14);
+  display:flex;align-items:center;justify-content:center;z-index:9999;
+}
+.login-box{background:#fff;border-radius:24px;padding:44px 40px;width:400px;box-shadow:0 24px 80px rgba(0,0,0,.3)}
+.login-logo{font-family:'Cormorant Garamond',serif;font-size:2rem;color:var(--g1);margin-bottom:4px}
+.login-logo em{color:var(--gold);font-style:italic}
+.login-sub{color:var(--txt3);font-size:.87rem;margin-bottom:28px}
+.lform{display:flex;flex-direction:column;gap:14px}
+.lfg{display:flex;flex-direction:column;gap:6px}
+.lfg label{font-size:.75rem;color:var(--txt3);letter-spacing:.5px;text-transform:uppercase}
+.lfg input{border:1.5px solid var(--border);border-radius:10px;padding:12px 14px;font-family:'Jost',sans-serif;font-size:.93rem;outline:none;transition:border .25s;color:var(--txt1)}
+.lfg input:focus{border-color:var(--g4)}
+.login-btn{background:var(--g3);color:#fff;border:none;padding:14px;border-radius:10px;font-family:'Jost',sans-serif;font-size:.95rem;font-weight:600;cursor:pointer;transition:background .25s;margin-top:4px}
+.login-btn:hover{background:var(--g2)}
+.login-err{color:var(--red);font-size:.82rem;text-align:center;display:none;padding:8px;background:#fff5f5;border-radius:8px}
+.login-hint{font-size:.78rem;color:var(--txt3);text-align:center;margin-top:12px}
 
-/* ====== NAV ====== */
-#mainNav{
-  position:fixed;top:0;left:0;right:0;z-index:500;
+/* ====== LAYOUT ====== */
+#adminLayout{display:none;min-height:100vh}
+
+/* SIDEBAR */
+.sidebar{
+  position:fixed;top:0;left:0;bottom:0;width:var(--sidebar-w);
+  background:var(--g1);display:flex;flex-direction:column;z-index:100;
+  border-right:1px solid rgba(82,183,136,.12);
+}
+.sb-logo{
+  padding:20px 24px;border-bottom:1px solid rgba(82,183,136,.12);
+  font-family:'Cormorant Garamond',serif;font-size:1.5rem;color:var(--g5);
+}
+.sb-logo em{color:var(--gold);font-style:italic}
+.sb-logo span{display:block;font-size:.72rem;color:rgba(183,228,199,.4);font-family:'Jost',sans-serif;letter-spacing:1px;text-transform:uppercase;margin-top:2px}
+.sb-nav{flex:1;overflow-y:auto;padding:16px 0}
+.sb-section{font-size:.65rem;letter-spacing:2px;text-transform:uppercase;color:rgba(183,228,199,.3);padding:12px 24px 6px;font-weight:600}
+.sb-link{
+  display:flex;align-items:center;gap:12px;
+  padding:11px 24px;color:rgba(183,228,199,.65);
+  text-decoration:none;font-size:.88rem;transition:all .2s;cursor:pointer;
+  border:none;background:none;width:100%;text-align:left;font-family:'Jost',sans-serif;
+}
+.sb-link:hover{background:rgba(82,183,136,.1);color:var(--g4)}
+.sb-link.active{background:rgba(82,183,136,.18);color:var(--g4);border-right:3px solid var(--g4)}
+.sb-link .ic{font-size:1.1rem;width:22px;text-align:center}
+.sb-link .badge{margin-left:auto;background:var(--terra);color:#fff;border-radius:50px;font-size:.65rem;padding:2px 8px;font-weight:700}
+.sb-footer{padding:16px 24px;border-top:1px solid rgba(82,183,136,.12)}
+.sb-user{display:flex;align-items:center;gap:10px}
+.sb-av{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--g4),var(--gold));display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;font-size:1rem;color:var(--g1);font-weight:700}
+.sb-uname{font-size:.85rem;color:var(--g5);font-weight:500}
+.sb-urole{font-size:.72rem;color:rgba(183,228,199,.45)}
+.sb-logout{margin-top:10px;width:100%;background:rgba(192,112,80,.15);color:var(--terra);border:1px solid rgba(192,112,80,.3);padding:8px;border-radius:8px;cursor:pointer;font-family:'Jost',sans-serif;font-size:.83rem;transition:all .25s}
+.sb-logout:hover{background:var(--terra);color:#fff}
+
+/* TOP NAV */
+.topnav{
+  position:fixed;top:0;left:var(--sidebar-w);right:0;height:var(--nav-h);z-index:99;
+  background:#fff;border-bottom:1px solid var(--border);
   display:flex;align-items:center;justify-content:space-between;
-  padding:0 56px;height:70px;
-  background:rgba(14,35,24,.97);backdrop-filter:blur(16px);
-  border-bottom:1px solid rgba(82,183,136,.18);
-  transition:all .3s;
+  padding:0 32px;
 }
-.nav-logo{
-  font-family:'Cormorant Garamond',serif;font-size:1.75rem;
-  color:var(--g5);letter-spacing:1px;text-decoration:none;
-}
-.nav-logo em{color:var(--gold);font-style:italic}
-.nav-links{display:flex;gap:32px;list-style:none}
-.nav-links a{color:rgba(183,228,199,.75);font-size:.86rem;text-decoration:none;letter-spacing:.5px;font-weight:500;transition:color .25s}
-.nav-links a:hover{color:var(--g4)}
-.nav-right{display:flex;align-items:center;gap:16px}
-.nav-cart{
-  position:relative;background:none;border:1.5px solid rgba(82,183,136,.4);
-  color:var(--g5);padding:8px 18px;border-radius:50px;cursor:pointer;
-  font-family:'Jost',sans-serif;font-size:.85rem;transition:all .25s;
-}
-.nav-cart:hover{background:var(--g4);color:var(--g1);border-color:var(--g4)}
-.cart-dot{
-  position:absolute;top:-6px;right:-6px;background:var(--terra);
-  color:#fff;border-radius:50%;width:20px;height:20px;font-size:.65rem;
-  display:flex;align-items:center;justify-content:center;font-weight:700;
-}
-.btn-login{background:var(--g4);color:var(--g1);padding:9px 22px;border-radius:50px;border:none;cursor:pointer;font-family:'Jost',sans-serif;font-size:.85rem;font-weight:600;transition:all .25s}
-.btn-login:hover{background:var(--gold)}
+.topnav-title{font-family:'Cormorant Garamond',serif;font-size:1.5rem;color:var(--g1)}
+.topnav-right{display:flex;align-items:center;gap:16px}
+.notif-btn{background:var(--bg);border:1px solid var(--border);padding:8px 14px;border-radius:8px;cursor:pointer;font-size:.85rem;position:relative;color:var(--txt2)}
+.notif-dot{position:absolute;top:4px;right:4px;width:8px;height:8px;background:var(--terra);border-radius:50%}
+.top-date{font-size:.8rem;color:var(--txt3)}
 
-/* ====== HERO ====== */
-.hero{
-  min-height:100vh;padding:100px 56px 60px;
-  background:linear-gradient(160deg,#06130d 0%,#0e2318 45%,#0b1e14 100%);
-  display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center;
-  position:relative;overflow:hidden;
-}
-.hero::before{
-  content:'';position:absolute;inset:0;
-  background:url('https://images.unsplash.com/photo-1416879595882-3373a0480b5b?w=1600&q=60') center/cover;
-  opacity:.06;
-}
-/* floating particles */
-.hero::after{
-  content:'';position:absolute;top:-200px;right:-200px;
-  width:600px;height:600px;border-radius:50%;
-  background:radial-gradient(circle,rgba(82,183,136,.12) 0%,transparent 70%);
-  pointer-events:none;
-}
-.hero-text{position:relative;z-index:2}
-.hero-pill{
-  display:inline-flex;align-items:center;gap:8px;
-  background:rgba(82,183,136,.12);border:1px solid rgba(82,183,136,.3);
-  color:var(--g4);font-size:.75rem;letter-spacing:2px;text-transform:uppercase;
-  padding:7px 18px;border-radius:50px;margin-bottom:28px;
-}
-.hero-h1{
-  font-family:'Cormorant Garamond',serif;
-  font-size:clamp(3rem,5.5vw,4.8rem);color:var(--cream);line-height:1.1;margin-bottom:24px;
-}
-.hero-h1 em{color:var(--g4);font-style:italic}
-.hero-sub{font-size:1rem;color:rgba(183,228,199,.7);line-height:1.8;max-width:460px;margin-bottom:36px}
-.hero-founder{
-  display:flex;align-items:center;gap:14px;margin-bottom:38px;
-  padding:14px 20px;background:rgba(255,255,255,.05);
-  border:1px solid rgba(82,183,136,.2);border-radius:14px;
-  width:fit-content;
-}
-.founder-av{
-  width:50px;height:50px;border-radius:50%;flex-shrink:0;
-  background:linear-gradient(135deg,var(--g4),var(--gold));
-  display:flex;align-items:center;justify-content:center;
-  font-family:'Cormorant Garamond',serif;font-size:1.5rem;
-  color:var(--g1);font-weight:700;border:2px solid rgba(82,183,136,.5);
-}
-.founder-info{line-height:1.4}
-.founder-name{font-family:'Cormorant Garamond',serif;color:var(--gold);font-size:1.1rem;font-weight:600}
-.founder-role{color:rgba(183,228,199,.55);font-size:.78rem}
-.hero-btns{display:flex;gap:14px;flex-wrap:wrap}
-.btn-prim{background:var(--g4);color:var(--g1);padding:14px 34px;border-radius:50px;text-decoration:none;font-weight:600;font-size:.95rem;letter-spacing:.3px;transition:all .3s;display:inline-block}
-.btn-prim:hover{background:var(--gold);transform:translateY(-2px);box-shadow:0 8px 24px rgba(82,183,136,.3)}
-.btn-outl{border:1.5px solid rgba(82,183,136,.45);color:var(--g4);padding:14px 34px;border-radius:50px;text-decoration:none;font-size:.95rem;transition:all .3s;display:inline-block}
-.btn-outl:hover{border-color:var(--gold);color:var(--gold)}
-
-/* Hero images mosaic */
-.hero-mosaic{position:relative;z-index:2;height:540px;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:14px}
-.moz{border-radius:18px;overflow:hidden;position:relative}
-.moz:first-child{grid-row:span 2;border-radius:24px}
-.moz img{width:100%;height:100%;object-fit:cover;transition:transform .5s}
-.moz:hover img{transform:scale(1.07)}
-.moz-label{
-  position:absolute;bottom:16px;left:16px;
-  background:rgba(14,35,24,.8);color:var(--g5);
-  font-size:.72rem;letter-spacing:1px;text-transform:uppercase;
-  padding:5px 12px;border-radius:50px;backdrop-filter:blur(6px);
-}
-.hero-stats{
-  position:absolute;bottom:36px;left:50%;transform:translateX(-50%);
-  display:flex;gap:48px;z-index:5;
-}
-.hstat{text-align:center}
-.hstat-n{font-family:'Cormorant Garamond',serif;font-size:2rem;color:var(--cream);font-weight:700}
-.hstat-l{font-size:.73rem;color:rgba(183,228,199,.6);letter-spacing:.5px}
-
-/* ====== SECTION COMMONS ====== */
-section{padding:88px 56px}
-.sec-tag{font-size:.72rem;letter-spacing:3px;text-transform:uppercase;color:var(--g3);font-weight:600;margin-bottom:10px}
-.sec-h2{font-family:'Cormorant Garamond',serif;font-size:clamp(2rem,3.5vw,2.9rem);color:var(--txt1);line-height:1.2;margin-bottom:14px}
-.sec-desc{color:var(--txt3);font-size:.97rem;line-height:1.8;max-width:540px}
-
-/* ====== CATEGORIES ====== */
-.cats-sec{background:var(--g1)}
-.cats-sec .sec-tag{color:var(--g4)}
-.cats-sec .sec-h2{color:var(--cream)}
-.cats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;margin-top:48px}
-.cat-card{position:relative;border-radius:20px;overflow:hidden;height:230px;cursor:pointer}
-.cat-card img{width:100%;height:100%;object-fit:cover;transition:transform .5s}
-.cat-card:hover img{transform:scale(1.1)}
-.cat-ov{position:absolute;inset:0;background:linear-gradient(to top,rgba(14,35,24,.88) 0%,rgba(14,35,24,.08) 65%);display:flex;flex-direction:column;justify-content:flex-end;padding:22px;transition:all .3s}
-.cat-name{font-family:'Cormorant Garamond',serif;color:#fff;font-size:1.25rem;font-weight:600}
-.cat-cnt{color:var(--g5);font-size:.78rem;margin-top:4px}
-.cat-arrow{position:absolute;top:16px;right:16px;width:34px;height:34px;background:rgba(82,183,136,.2);border-radius:50%;display:flex;align-items:center;justify-content:center;color:var(--g4);font-size:1rem;opacity:0;transform:translateY(-6px);transition:all .3s}
-.cat-card:hover .cat-arrow{opacity:1;transform:translateY(0)}
-
-/* ====== PLANTS GRID ====== */
-.plants-sec{background:var(--cream)}
-.plants-header{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:48px;flex-wrap:wrap;gap:16px}
-.plants-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(275px,1fr));gap:28px}
-.pcard{background:#fff;border-radius:20px;overflow:hidden;box-shadow:0 3px 18px rgba(14,35,24,.06);transition:all .35s;position:relative}
-.pcard:hover{transform:translateY(-8px);box-shadow:0 18px 48px rgba(14,35,24,.14)}
-.pimg{height:248px;overflow:hidden;position:relative}
-.pimg img{width:100%;height:100%;object-fit:cover;transition:transform .5s}
-.pcard:hover .pimg img{transform:scale(1.08)}
-.pbadge{
-  position:absolute;top:14px;left:14px;
-  background:var(--g2);color:var(--g5);
-  font-size:.68rem;padding:4px 12px;border-radius:50px;letter-spacing:1px;text-transform:uppercase;
-}
-.pbadge.sale{background:var(--terra);color:#fff}
-.pbadge.trending{background:var(--gold);color:var(--g1)}
-.wish{
-  position:absolute;top:14px;right:14px;width:36px;height:36px;
-  background:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;
-  cursor:pointer;box-shadow:0 2px 10px rgba(0,0,0,.12);font-size:1.1rem;transition:transform .25s;border:none;
-}
-.wish:hover{transform:scale(1.2)}
-.pbody{padding:20px 22px 24px}
-.pcat{font-size:.7rem;color:var(--txt3);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:6px}
-.pname{font-family:'Cormorant Garamond',serif;font-size:1.25rem;color:var(--txt1);margin-bottom:8px;font-weight:600}
-.pdesc{font-size:.82rem;color:var(--txt3);line-height:1.65;margin-bottom:16px}
-.pfoot{display:flex;align-items:center;justify-content:space-between}
-.pprice{font-size:1.2rem;font-weight:700;color:var(--g3)}
-.pprice s{font-size:.78rem;color:var(--txt3);margin-left:5px;font-weight:400}
-.add-btn{
-  background:var(--g1);color:#fff;border:none;
-  padding:10px 18px;border-radius:50px;font-size:.82rem;
-  cursor:pointer;font-family:'Jost',sans-serif;font-weight:500;
-  transition:background .25s;
-}
-.add-btn:hover{background:var(--g3)}
-.pinfo-row{display:flex;gap:10px;margin-bottom:14px;flex-wrap:wrap}
-.pinfo-tag{
-  font-size:.7rem;padding:3px 10px;border-radius:50px;
-  background:var(--g6);color:var(--g3);font-weight:500;
+/* MAIN CONTENT */
+.main-content{
+  margin-left:var(--sidebar-w);margin-top:var(--nav-h);
+  padding:28px 32px;min-height:calc(100vh - var(--nav-h));
 }
 
-/* ====== SEEDS & SUPPLIES ====== */
-.seeds-sec{background:var(--warm)}
-.seeds-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:20px;margin-top:48px}
-.scard{background:#fff;border-radius:18px;padding:22px;text-align:center;box-shadow:0 2px 14px rgba(14,35,24,.06);transition:all .3s;cursor:pointer}
-.scard:hover{transform:translateY(-6px);box-shadow:0 12px 32px rgba(14,35,24,.12)}
-.simg-wrap{width:116px;height:116px;border-radius:50%;overflow:hidden;margin:0 auto 16px;border:3px solid var(--g6)}
-.simg-wrap img{width:100%;height:100%;object-fit:cover}
-.sname{font-family:'Cormorant Garamond',serif;font-size:1.1rem;color:var(--txt1);margin-bottom:5px;font-weight:600}
-.stype{font-size:.7rem;color:var(--txt3);text-transform:uppercase;letter-spacing:1px;margin-bottom:12px}
-.sprice{font-weight:700;color:var(--g3);font-size:1.1rem}
-.s-add{margin-top:12px;background:var(--g6);color:var(--g3);border:none;padding:8px 20px;border-radius:50px;font-size:.8rem;cursor:pointer;font-family:'Jost',sans-serif;font-weight:500;transition:all .25s;width:100%}
-.s-add:hover{background:var(--g4);color:var(--g1)}
+/* PAGE (hidden by default) */
+.page{display:none}
+.page.active{display:block}
 
-/* ====== CONSULTATION ====== */
-.consult-sec{background:var(--g1)}
-.consult-inner{display:grid;grid-template-columns:1fr 1fr;gap:72px;align-items:center}
-.consult-imgbox{position:relative;border-radius:28px;overflow:hidden;height:520px}
-.consult-imgbox img{width:100%;height:100%;object-fit:cover}
-.expert-float{
-  position:absolute;bottom:26px;left:26px;right:26px;
-  background:rgba(255,255,255,.97);border-radius:16px;padding:18px 20px;
-  display:flex;gap:14px;align-items:center;
-  box-shadow:0 6px 28px rgba(0,0,0,.18);
-}
-.exp-av{
-  width:52px;height:52px;border-radius:50%;flex-shrink:0;
-  background:linear-gradient(135deg,var(--g4),var(--g2));
-  display:flex;align-items:center;justify-content:center;
-  font-family:'Cormorant Garamond',serif;font-size:1.4rem;
-  color:#fff;font-weight:700;
-}
-.exp-n{font-weight:600;font-size:.95rem;color:var(--txt1)}
-.exp-r{font-size:.77rem;color:var(--txt3)}
-.exp-av-tag{font-size:.73rem;color:var(--g3);font-weight:600;margin-top:2px}
-.consult-text .sec-tag{color:var(--g4)}
-.consult-text .sec-h2{color:var(--cream)}
-.consult-text .sec-desc{color:rgba(183,228,199,.65)}
-.feat-list{margin:32px 0}
-.feat{display:flex;gap:14px;align-items:flex-start;margin-bottom:22px}
-.feat-ic{width:44px;height:44px;border-radius:12px;background:rgba(82,183,136,.15);display:flex;align-items:center;justify-content:center;font-size:1.15rem;flex-shrink:0}
-.feat-t h4{font-size:.95rem;color:var(--cream);font-weight:600;margin-bottom:4px}
-.feat-t p{font-size:.82rem;color:rgba(183,228,199,.6);line-height:1.6}
+/* ====== DASHBOARD ====== */
+.stats-row{display:grid;grid-template-columns:repeat(6,1fr);gap:16px;margin-bottom:28px}
+.stat-card{background:var(--card-bg);border-radius:16px;padding:20px 18px;box-shadow:0 2px 12px rgba(14,35,24,.06);border:1px solid var(--border)}
+.stat-card .sc-val{font-family:'Cormorant Garamond',serif;font-size:1.9rem;color:var(--g1);font-weight:700}
+.stat-card .sc-lab{font-size:.74rem;color:var(--txt3);margin-top:4px;text-transform:uppercase;letter-spacing:.5px}
+.stat-card .sc-ic{font-size:1.6rem;margin-bottom:8px}
+.stat-card.green{border-top:3px solid var(--g4)}
+.stat-card.gold{border-top:3px solid var(--gold)}
+.stat-card.red{border-top:3px solid var(--terra)}
+.stat-card.blue{border-top:3px solid var(--blue)}
 
-/* ====== BOOKING FORM ====== */
-.book-sec{background:linear-gradient(135deg,#0b1e14,#162d20)}
-.book-inner{max-width:800px;margin:0 auto;text-align:center}
-.book-inner .sec-tag{color:var(--g4)}
-.book-inner .sec-h2{color:var(--cream)}
-.book-inner .sec-desc{color:rgba(183,228,199,.65);margin:0 auto 44px}
-.bform{display:grid;grid-template-columns:1fr 1fr;gap:18px;text-align:left}
-.fg{display:flex;flex-direction:column;gap:7px}
-.fg.full{grid-column:span 2}
-.fg label{font-size:.75rem;color:rgba(183,228,199,.65);letter-spacing:.5px;text-transform:uppercase}
-.fg input,.fg select,.fg textarea{
-  background:rgba(255,255,255,.07);border:1.5px solid rgba(82,183,136,.2);
-  border-radius:11px;padding:13px 15px;color:var(--cream);
-  font-family:'Jost',sans-serif;font-size:.93rem;outline:none;transition:border .3s;
-}
-.fg input::placeholder{color:rgba(183,228,199,.3)}
-.fg input:focus,.fg select:focus,.fg textarea:focus{border-color:var(--g4);background:rgba(255,255,255,.1)}
-.fg select option{background:#162d20}
-.fg textarea{resize:vertical;min-height:100px}
-.form-sub{grid-column:span 2;text-align:center;margin-top:6px}
-.btn-sub{background:var(--g4);color:var(--g1);border:none;padding:16px 52px;border-radius:50px;font-family:'Jost',sans-serif;font-size:1rem;font-weight:600;cursor:pointer;letter-spacing:.5px;transition:all .3s}
-.btn-sub:hover{background:var(--gold);transform:translateY(-2px)}
+.dash-grid{display:grid;grid-template-columns:2fr 1fr;gap:20px}
+.dash-card{background:var(--card-bg);border-radius:16px;padding:24px;box-shadow:0 2px 12px rgba(14,35,24,.06);border:1px solid var(--border)}
+.dash-card h3{font-family:'Cormorant Garamond',serif;font-size:1.25rem;color:var(--g1);margin-bottom:18px;padding-bottom:12px;border-bottom:1px solid var(--border)}
 
-/* ====== EXPERTS GRID ====== */
-.experts-sec{background:var(--cream)}
-.exp-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:22px;margin-top:48px}
-.exp-card{background:#fff;border-radius:20px;overflow:hidden;box-shadow:0 3px 18px rgba(14,35,24,.07);transition:all .3s;text-align:center}
-.exp-card:hover{transform:translateY(-6px);box-shadow:0 14px 40px rgba(14,35,24,.12)}
-.exp-card-img{height:200px;overflow:hidden}
-.exp-card-img img{width:100%;height:100%;object-fit:cover}
-.exp-card-body{padding:20px 18px 22px}
-.exp-card-name{font-family:'Cormorant Garamond',serif;font-size:1.15rem;color:var(--txt1);margin-bottom:4px;font-weight:600}
-.exp-card-spec{font-size:.78rem;color:var(--txt3);margin-bottom:10px}
-.exp-stars{color:#e9b84b;font-size:.85rem}
-.exp-avail{display:inline-block;font-size:.7rem;padding:3px 12px;border-radius:50px;background:var(--g6);color:var(--g3);margin-top:8px;font-weight:500}
+/* Table */
+.data-table{width:100%;border-collapse:collapse;font-size:.86rem}
+.data-table th{text-align:left;padding:10px 12px;background:var(--bg);color:var(--txt3);font-size:.73rem;letter-spacing:.5px;text-transform:uppercase;font-weight:600}
+.data-table td{padding:12px 12px;border-bottom:1px solid var(--border);color:var(--txt1);vertical-align:middle}
+.data-table tr:hover td{background:var(--bg)}
+.data-table img{width:44px;height:44px;object-fit:cover;border-radius:8px}
+.status-badge{display:inline-block;padding:3px 12px;border-radius:50px;font-size:.72rem;font-weight:600}
+.sb-pending{background:#fff8e0;color:#b88a10}
+.sb-confirmed{background:#e0f5ea;color:var(--g3)}
+.sb-shipped{background:#e0eeff;color:var(--blue)}
+.sb-delivered{background:#d8f3e0;color:var(--g2)}
+.sb-cancelled{background:#ffe0e0;color:var(--red)}
+.sb-completed{background:#d8f3e0;color:var(--g2)}
 
-/* ====== TESTIMONIALS ====== */
-.testi-sec{background:var(--warm)}
-.testi-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;margin-top:50px}
-.tcard{background:#fff;border-radius:20px;padding:28px;box-shadow:0 3px 18px rgba(14,35,24,.06)}
-.tq{font-family:'Cormorant Garamond',serif;font-size:3.5rem;color:var(--g5);line-height:1;margin-bottom:10px}
-.tstars{color:#e9b84b;font-size:.85rem;margin-bottom:10px}
-.ttxt{color:var(--txt2);font-size:.9rem;line-height:1.8;margin-bottom:20px;font-style:italic}
-.tauthor{display:flex;align-items:center;gap:12px}
-.tav{width:42px;height:42px;border-radius:50%;background:linear-gradient(135deg,var(--g4),var(--gold));display:flex;align-items:center;justify-content:center;color:var(--g1);font-weight:700;font-size:.95rem}
-.tname{font-weight:600;font-size:.9rem;color:var(--txt1)}
-.tloc{font-size:.76rem;color:var(--txt3)}
+/* Action buttons */
+.act-btn{border:none;padding:6px 14px;border-radius:6px;cursor:pointer;font-family:'Jost',sans-serif;font-size:.78rem;font-weight:500;transition:all .2s}
+.act-edit{background:#e8f4ff;color:var(--blue)}
+.act-edit:hover{background:var(--blue);color:#fff}
+.act-del{background:#ffe8e8;color:var(--red)}
+.act-del:hover{background:var(--red);color:#fff}
+.act-view{background:#f0f8f0;color:var(--g3)}
+.act-view:hover{background:var(--g3);color:#fff}
 
-/* ====== CART SIDEBAR ====== */
-.cart-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:800;opacity:0;pointer-events:none;transition:opacity .3s;backdrop-filter:blur(4px)}
-.cart-overlay.open{opacity:1;pointer-events:all}
-.cart-sidebar{
-  position:fixed;top:0;right:-480px;width:420px;height:100vh;
-  background:var(--g1);z-index:900;transition:right .35s ease;
-  display:flex;flex-direction:column;box-shadow:-8px 0 40px rgba(0,0,0,.3);
-}
-.cart-sidebar.open{right:0}
-.cart-head{
-  padding:24px 28px;border-bottom:1px solid rgba(82,183,136,.2);
-  display:flex;justify-content:space-between;align-items:center;
-}
-.cart-head h3{font-family:'Cormorant Garamond',serif;font-size:1.5rem;color:var(--cream)}
-.cart-close{background:none;border:none;color:var(--g5);font-size:1.5rem;cursor:pointer;line-height:1}
-.cart-items{flex:1;overflow-y:auto;padding:20px 28px}
-.cart-empty{text-align:center;color:var(--txt3);margin-top:80px}
-.cart-empty span{font-size:3rem;display:block;margin-bottom:12px}
-.citem{
-  display:flex;gap:14px;align-items:center;
-  padding:14px 0;border-bottom:1px solid rgba(82,183,136,.12);
-}
-.citem-img{width:60px;height:60px;border-radius:10px;overflow:hidden;flex-shrink:0}
-.citem-img img{width:100%;height:100%;object-fit:cover}
-.citem-info{flex:1}
-.citem-name{color:var(--cream);font-size:.9rem;font-weight:500}
-.citem-price{color:var(--g4);font-size:.85rem;margin-top:3px}
-.citem-qty{display:flex;align-items:center;gap:8px;margin-top:6px}
-.qty-btn{background:rgba(82,183,136,.15);border:none;color:var(--g4);width:26px;height:26px;border-radius:50%;cursor:pointer;font-size:1rem;display:flex;align-items:center;justify-content:center;transition:background .2s}
-.qty-btn:hover{background:var(--g4);color:var(--g1)}
-.qty-n{color:var(--cream);font-size:.9rem;font-weight:600;min-width:20px;text-align:center}
-.citem-del{background:none;border:none;color:var(--terra);cursor:pointer;font-size:1rem;padding:4px}
-.cart-foot{padding:20px 28px;border-top:1px solid rgba(82,183,136,.2)}
-.cart-total{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
-.cart-total span{color:var(--g5);font-size:.9rem}
-.cart-total strong{color:var(--cream);font-size:1.2rem;font-family:'Cormorant Garamond',serif}
-.checkout-btn{width:100%;background:var(--g4);color:var(--g1);border:none;padding:15px;border-radius:12px;font-family:'Jost',sans-serif;font-size:1rem;font-weight:600;cursor:pointer;transition:background .25s}
-.checkout-btn:hover{background:var(--gold)}
+/* ====== PAGE HEADER ====== */
+.page-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;flex-wrap:wrap;gap:12px}
+.page-header h2{font-family:'Cormorant Garamond',serif;font-size:1.8rem;color:var(--g1)}
+.hdr-actions{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.search-box{display:flex;align-items:center;gap:8px;background:#fff;border:1px solid var(--border);border-radius:10px;padding:8px 14px}
+.search-box input{border:none;outline:none;font-family:'Jost',sans-serif;font-size:.88rem;color:var(--txt1);min-width:180px}
+.btn-add{background:var(--g3);color:#fff;border:none;padding:10px 20px;border-radius:10px;cursor:pointer;font-family:'Jost',sans-serif;font-size:.88rem;font-weight:600;display:flex;align-items:center;gap:6px;transition:background .25s}
+.btn-add:hover{background:var(--g2)}
 
-/* ====== MODAL ====== */
-.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:700;display:none;align-items:center;justify-content:center;backdrop-filter:blur(6px)}
-.modal-overlay.open{display:flex}
-.modal{background:#fff;border-radius:24px;padding:36px 40px;width:100%;max-width:480px;position:relative;max-height:90vh;overflow-y:auto}
-.modal-close{position:absolute;top:16px;right:18px;background:none;border:none;font-size:1.4rem;cursor:pointer;color:var(--txt3)}
-.modal h2{font-family:'Cormorant Garamond',serif;font-size:1.8rem;color:var(--g1);margin-bottom:6px}
-.modal p{color:var(--txt3);font-size:.88rem;margin-bottom:24px}
-.mform{display:flex;flex-direction:column;gap:14px}
-.mfg{display:flex;flex-direction:column;gap:6px}
-.mfg label{font-size:.77rem;color:var(--txt3);letter-spacing:.5px;text-transform:uppercase}
-.mfg input{border:1.5px solid #e0ead8;border-radius:10px;padding:12px 14px;font-family:'Jost',sans-serif;font-size:.93rem;outline:none;transition:border .25s;color:var(--txt1)}
-.mfg input:focus{border-color:var(--g4)}
-.mfg input::placeholder{color:#aabba8}
-.modal-tabs{display:flex;gap:0;margin-bottom:24px;border-radius:10px;overflow:hidden;border:1px solid #e0ead8}
-.mtab{flex:1;padding:10px;text-align:center;background:#fff;border:none;cursor:pointer;font-family:'Jost',sans-serif;font-size:.88rem;color:var(--txt3);transition:all .25s}
-.mtab.active{background:var(--g2);color:#fff}
-.modal-btn{background:var(--g3);color:#fff;border:none;padding:14px;border-radius:10px;font-family:'Jost',sans-serif;font-size:.95rem;font-weight:600;cursor:pointer;transition:background .25s;margin-top:4px}
-.modal-btn:hover{background:var(--g2)}
-.modal-switch{text-align:center;font-size:.84rem;color:var(--txt3);margin-top:12px}
-.modal-switch a{color:var(--g3);text-decoration:none;font-weight:600;cursor:pointer}
-.modal-err{color:var(--terra);font-size:.82rem;text-align:center;padding:8px;background:#fff5f5;border-radius:8px;display:none}
-.modal-ok{color:var(--g3);font-size:.82rem;text-align:center;padding:8px;background:#f0faf3;border-radius:8px;display:none}
+/* ====== FORM MODAL ====== */
+.fmodal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:800;display:none;align-items:center;justify-content:center;backdrop-filter:blur(4px)}
+.fmodal-overlay.open{display:flex}
+.fmodal{background:#fff;border-radius:20px;padding:32px 36px;width:640px;max-width:95vw;max-height:90vh;overflow-y:auto;position:relative}
+.fmodal-close{position:absolute;top:14px;right:18px;background:none;border:none;font-size:1.4rem;cursor:pointer;color:var(--txt3)}
+.fmodal h3{font-family:'Cormorant Garamond',serif;font-size:1.6rem;color:var(--g1);margin-bottom:20px}
+.fgrid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.fgrid .full{grid-column:span 2}
+.ffg{display:flex;flex-direction:column;gap:6px}
+.ffg label{font-size:.74rem;color:var(--txt3);letter-spacing:.5px;text-transform:uppercase;font-weight:600}
+.ffg input,.ffg select,.ffg textarea{border:1.5px solid var(--border);border-radius:10px;padding:11px 14px;font-family:'Jost',sans-serif;font-size:.9rem;color:var(--txt1);outline:none;transition:border .25s}
+.ffg input:focus,.ffg select:focus,.ffg textarea:focus{border-color:var(--g4)}
+.ffg textarea{resize:vertical;min-height:90px}
+.fmodal-btns{display:flex;gap:10px;margin-top:18px;justify-content:flex-end}
+.fbtn-cancel{background:var(--bg);border:1px solid var(--border);color:var(--txt2);padding:10px 22px;border-radius:9px;cursor:pointer;font-family:'Jost',sans-serif;font-size:.9rem}
+.fbtn-save{background:var(--g3);color:#fff;border:none;padding:10px 26px;border-radius:9px;cursor:pointer;font-family:'Jost',sans-serif;font-size:.9rem;font-weight:600;transition:background .25s}
+.fbtn-save:hover{background:var(--g2)}
+
+/* IMG PREVIEW */
+.img-preview{width:100%;height:160px;border-radius:10px;overflow:hidden;background:var(--bg);border:1.5px dashed var(--border);display:flex;align-items:center;justify-content:center;margin-top:8px;position:relative}
+.img-preview img{width:100%;height:100%;object-fit:cover}
+.img-placeholder{text-align:center;color:var(--txt3);font-size:.82rem}
 
 /* ====== TOAST ====== */
-.toast{
-  position:fixed;bottom:32px;right:32px;z-index:999;
-  background:var(--g1);color:var(--g5);
-  padding:14px 22px;border-radius:14px;
-  border-left:4px solid var(--g4);
-  font-size:.88rem;box-shadow:0 8px 28px rgba(0,0,0,.25);
-  transform:translateY(70px);opacity:0;transition:all .35s;pointer-events:none;
-  max-width:320px;
-}
+.toast{position:fixed;bottom:28px;right:28px;z-index:9999;background:var(--g1);color:var(--g5);padding:13px 20px;border-radius:12px;border-left:4px solid var(--g4);font-size:.86rem;box-shadow:0 8px 28px rgba(0,0,0,.2);transform:translateY(60px);opacity:0;transition:all .3s;pointer-events:none;max-width:300px}
 .toast.show{transform:translateY(0);opacity:1}
 .toast.error{border-left-color:var(--terra)}
+.toast.ok{border-left-color:var(--g4)}
 
-/* ====== FOOTER ====== */
-footer{background:#080f0b;padding:64px 56px 32px}
-.footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:48px;margin-bottom:48px}
-.footer-brand .nav-logo{display:block;margin-bottom:16px;text-decoration:none}
-.footer-desc{font-size:.87rem;line-height:1.8;color:rgba(183,228,199,.45);max-width:270px}
-.footer-owner{margin-top:14px;font-size:.82rem;color:var(--gold)}
-.fcol h4{color:var(--cream);font-size:.85rem;font-weight:600;letter-spacing:1px;text-transform:uppercase;margin-bottom:18px}
-.fcol ul{list-style:none}
-.fcol li{margin-bottom:10px}
-.fcol a{color:rgba(183,228,199,.5);font-size:.86rem;text-decoration:none;transition:color .25s}
-.fcol a:hover{color:var(--g4)}
-.footer-bot{border-top:1px solid rgba(82,183,136,.12);padding-top:24px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px}
-.footer-bot span{font-size:.8rem;color:rgba(183,228,199,.35)}
+/* QUICK STATS mini chart */
+.quick-item{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--border)}
+.quick-item:last-child{border-bottom:none}
+.quick-ic{width:36px;height:36px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0}
+.quick-n{font-size:.88rem;color:var(--txt1);font-weight:500}
+.quick-s{font-size:.76rem;color:var(--txt3)}
+.quick-v{margin-left:auto;font-weight:700;font-size:.9rem;color:var(--g3)}
 
-/* ====== RESPONSIVE ====== */
-@media(max-width:1024px){
-  .hero{grid-template-columns:1fr;padding:100px 32px 60px;text-align:center}
-  .hero-founder{margin-inline:auto}
-  .hero-btns{justify-content:center}
-  .hero-mosaic{height:260px}
-  .hero-mosaic .moz:nth-child(3),.hero-mosaic .moz:nth-child(4){display:none}
-  .cats-grid{grid-template-columns:1fr 1fr}
-  .consult-inner{grid-template-columns:1fr}
-  .exp-grid{grid-template-columns:1fr 1fr}
-  .testi-grid{grid-template-columns:1fr}
-  .footer-grid{grid-template-columns:1fr 1fr;gap:32px}
-}
-@media(max-width:600px){
-  section{padding:60px 20px}
-  #mainNav{padding:0 20px}
-  .nav-links{display:none}
-  .bform{grid-template-columns:1fr}
-  .fg.full,.form-sub{grid-column:span 1}
-  .cats-grid{grid-template-columns:1fr}
-  .exp-grid{grid-template-columns:1fr}
-  .plants-grid{grid-template-columns:1fr}
+@media(max-width:900px){
+  .sidebar{transform:translateX(-100%)}
+  .main-content,.topnav{margin-left:0;left:0}
+  .stats-row{grid-template-columns:repeat(3,1fr)}
+  .dash-grid{grid-template-columns:1fr}
+  .fgrid{grid-template-columns:1fr}
+  .fgrid .full{grid-column:span 1}
 }
 </style>
 </head>
 <body>
 
-<!-- ====== NAV ====== -->
-<nav id="mainNav">
-  <a href="#" class="nav-logo">Green<em>Leaf</em></a>
-  <ul class="nav-links">
-    <li><a href="#plants">Plants</a></li>
-    <li><a href="#categories">Categories</a></li>
-    <li><a href="#seeds">Seeds & Supplies</a></li>
-    <li><a href="#experts">Our Experts</a></li>
-    <li><a href="#booking">Book Now</a></li>
-  </ul>
-  <div class="nav-right">
-    <button class="nav-cart" onclick="toggleCart()">
-      🛒 Cart <span class="cart-dot" id="cartCount">0</span>
-    </button>
-    <button class="btn-login" id="authBtn" onclick="openAuth()">Login / Register</button>
-  </div>
-</nav>
-
-<!-- ====== HERO ====== -->
-<section class="hero" id="home">
-  <div class="hero-text">
-    <div class="hero-pill">🌿 Smart Plant Nursery – Pakistan</div>
-    <h1 class="hero-h1">Bring Living<br/><em>Beauty</em> Into<br/>Your World</h1>
-    <p class="hero-sub">Premium plants, rare seeds, and personalized expert consultations — curated by Rania for plant lovers across Pakistan.</p>
-    <div class="hero-founder">
-      <div class="founder-av">R</div>
-      <div class="founder-info">
-        <div class="founder-name">Rania</div>
-        <div class="founder-role">Founder & Head Horticulturist · GreenLeaf</div>
-      </div>
+<!-- ====== LOGIN SCREEN ====== -->
+<div id="loginScreen">
+  <div class="login-box">
+    <div class="login-logo">Green<em>Leaf</em></div>
+    <div class="login-sub">Admin Panel · Enter your credentials</div>
+    <div class="login-err" id="loginErr">Invalid email or password</div>
+    <div class="lform">
+      <div class="lfg"><label>Email Address</label><input type="email" id="adminEmail" placeholder="rania@greenleaf.pk" value="rania@greenleaf.pk"></div>
+      <div class="lfg"><label>Password</label><input type="password" id="adminPass" placeholder="Enter password" value="admin123"></div>
+      <button class="login-btn" onclick="adminLogin()">Login to Admin Panel</button>
     </div>
-    <div class="hero-btns">
-      <a href="#plants" class="btn-prim">🌺 Shop Plants</a>
-      <a href="#booking" class="btn-outl">📅 Book Consultation</a>
-    </div>
-  </div>
-  <div class="hero-mosaic">
-    <div class="moz">
-      <img src="https://images.unsplash.com/photo-1490750967868-88df5691cc22?w=600&q=85" alt="Pink roses in bloom">
-      <span class="moz-label">Rose Garden</span>
-    </div>
-    <div class="moz">
-      <img src="https://images.unsplash.com/photo-1444021465936-c6ca81d39b84?w=400&q=85" alt="Colorful tulips">
-      <span class="moz-label">Tulips</span>
-    </div>
-    <div class="moz">
-      <img src="https://images.unsplash.com/photo-1502977249166-824b3a8a4d6d?w=400&q=85" alt="Monstera plant">
-      <span class="moz-label">Monstera</span>
-    </div>
-  </div>
-  <div class="hero-stats">
-    <div class="hstat"><div class="hstat-n">500+</div><div class="hstat-l">Plant Varieties</div></div>
-    <div class="hstat"><div class="hstat-n">2,400+</div><div class="hstat-l">Happy Customers</div></div>
-    <div class="hstat"><div class="hstat-n">12</div><div class="hstat-l">Expert Consultants</div></div>
-    <div class="hstat"><div class="hstat-n">5★</div><div class="hstat-l">Rated Service</div></div>
-  </div>
-</section>
-
-<!-- ====== CATEGORIES ====== -->
-<section class="cats-sec" id="categories">
-  <div class="sec-tag">Browse Collection</div>
-  <h2 class="sec-h2" style="color:var(--cream)">Everything for Your Garden</h2>
-  <div class="cats-grid">
-    <div class="cat-card" onclick="filterByCategory('Indoor Plants')">
-      <img src="https://images.unsplash.com/photo-1416879595882-3373a0480b5b?w=500&q=80" alt="Indoor Plants">
-      <div class="cat-ov">
-        <div class="cat-name">Indoor Plants</div>
-        <div class="cat-cnt">142 varieties available</div>
-      </div>
-      <div class="cat-arrow">→</div>
-    </div>
-    <div class="cat-card" onclick="filterByCategory('Flowering Plants')">
-      <img src="https://images.unsplash.com/photo-1508739773434-c26b3d09e071?w=500&q=80" alt="Flower Plants">
-      <div class="cat-ov">
-        <div class="cat-name">Flowering Plants</div>
-        <div class="cat-cnt">98 varieties available</div>
-      </div>
-      <div class="cat-arrow">→</div>
-    </div>
-    <div class="cat-card" onclick="filterByCategory('Outdoor Garden')">
-      <img src="https://images.unsplash.com/photo-1463936575829-25148e1db1b8?w=500&q=80" alt="Outdoor Garden">
-      <div class="cat-ov">
-        <div class="cat-name">Outdoor Garden</div>
-        <div class="cat-cnt">175 varieties available</div>
-      </div>
-      <div class="cat-arrow">→</div>
-    </div>
-    <div class="cat-card" onclick="filterByCategory('Succulents')">
-      <img src="https://images.unsplash.com/photo-1459156212016-c812468e2115?w=500&q=80" alt="Succulents">
-      <div class="cat-ov">
-        <div class="cat-name">Succulents & Cacti</div>
-        <div class="cat-cnt">63 varieties available</div>
-      </div>
-      <div class="cat-arrow">→</div>
-    </div>
-  </div>
-</section>
-
-<!-- ====== PLANTS ====== -->
-<section class="plants-sec" id="plants">
-  <div class="plants-header">
-    <div>
-      <div class="sec-tag">Featured Collection</div>
-      <h2 class="sec-h2">Hand-Picked by Rania</h2>
-    </div>
-    <div style="display:flex;gap:10px;flex-wrap:wrap">
-      <button onclick="filterPlants('all')" class="add-btn" id="f-all" style="background:var(--g3)">All</button>
-      <button onclick="filterPlants('indoor')" class="add-btn" id="f-indoor">Indoor</button>
-      <button onclick="filterPlants('flower')" class="add-btn" id="f-flower">Flowers</button>
-      <button onclick="filterPlants('outdoor')" class="add-btn" id="f-outdoor">Outdoor</button>
-    </div>
-  </div>
-  <div class="plants-grid" id="plantsGrid">
-    <!-- Plants inserted by JS -->
-  </div>
-</section>
-
-<!-- ====== SEEDS & SUPPLIES ====== -->
-<section class="seeds-sec" id="seeds">
-  <div class="sec-tag">Seeds & Gardening Supplies</div>
-  <h2 class="sec-h2">Grow From the Very Start</h2>
-  <p class="sec-desc">Premium seeds, fertilizers, pots, and tools — everything to nurture your garden from seed to bloom.</p>
-  <div class="seeds-grid" id="suppliesGrid">
-    <!-- Supplies inserted by JS -->
-  </div>
-</section>
-
-<!-- ====== CONSULTATION ====== -->
-<section class="consult-sec" id="consult" style="padding:88px 56px">
-  <div class="consult-inner">
-    <div class="consult-imgbox">
-      <img src="https://images.unsplash.com/photo-1585320806297-9794b3e4aaae?w=700&q=85" alt="Plant expert consulting">
-      <div class="expert-float">
-        <div class="exp-av">R</div>
-        <div>
-          <div class="exp-n">Rania</div>
-          <div class="exp-r">Lead Horticulturist & Founder</div>
-          <div class="exp-av-tag">✅ Available for sessions</div>
-        </div>
-      </div>
-    </div>
-    <div class="consult-text">
-      <div class="sec-tag">Expert Plant Care</div>
-      <h2 class="sec-h2">Get Personal Guidance from Our Gardening Experts</h2>
-      <p class="sec-desc" style="color:rgba(183,228,199,.65)">Whether beginner or expert, our certified horticulturists will help you choose plants, diagnose problems, and build your dream garden.</p>
-      <div class="feat-list">
-        <div class="feat"><div class="feat-ic">🌱</div><div class="feat-t"><h4>Plant Selection Advice</h4><p>Curated picks based on your space, climate, and lifestyle.</p></div></div>
-        <div class="feat"><div class="feat-ic">💧</div><div class="feat-t"><h4>Care & Maintenance Plans</h4><p>Personalized watering, fertilizing, and pruning schedules.</p></div></div>
-        <div class="feat"><div class="feat-ic">🔬</div><div class="feat-t"><h4>Disease & Pest Diagnosis</h4><p>Expert identification and treatment for common plant issues.</p></div></div>
-        <div class="feat"><div class="feat-ic">🏡</div><div class="feat-t"><h4>Landscape Design</h4><p>Professional garden layout and beautification planning.</p></div></div>
-      </div>
-      <a href="#booking" class="btn-prim" style="border:none;display:inline-block">Book Your Session →</a>
-    </div>
-  </div>
-</section>
-
-<!-- ====== EXPERTS ====== -->
-<section class="experts-sec" id="experts">
-  <div style="text-align:center;margin-bottom:8px">
-    <div class="sec-tag" style="text-align:center">Meet the Team</div>
-    <h2 class="sec-h2" style="text-align:center">Our Gardening Experts</h2>
-  </div>
-  <div class="exp-grid">
-    <div class="exp-card">
-      <div class="exp-card-img"><img src="https://images.unsplash.com/photo-1594744803329-e58b31de8bf5?w=400&q=80" alt="Rania"></div>
-      <div class="exp-card-body">
-        <div class="exp-card-name">Rania</div>
-        <div class="exp-card-spec">Lead Horticulturist · Founder</div>
-        <div class="exp-stars">★★★★★</div>
-        <span class="exp-avail">✅ Available</span>
-      </div>
-    </div>
-    <div class="exp-card">
-      <div class="exp-card-img"><img src="https://images.unsplash.com/photo-1537368910025-700350fe46c7?w=400&q=80" alt="Dr Hamid"></div>
-      <div class="exp-card-body">
-        <div class="exp-card-name">Dr. Hamid Shah</div>
-        <div class="exp-card-spec">Plant Pathologist · PhD</div>
-        <div class="exp-stars">★★★★★</div>
-        <span class="exp-avail">✅ Available</span>
-      </div>
-    </div>
-    <div class="exp-card">
-      <div class="exp-card-img"><img src="https://images.unsplash.com/photo-1580489944761-15a19d654956?w=400&q=80" alt="Sara Malik"></div>
-      <div class="exp-card-body">
-        <div class="exp-card-name">Sara Malik</div>
-        <div class="exp-card-spec">Indoor Plant Specialist</div>
-        <div class="exp-stars">★★★★☆</div>
-        <span class="exp-avail">✅ Available</span>
-      </div>
-    </div>
-    <div class="exp-card">
-      <div class="exp-card-img"><img src="https://images.unsplash.com/photo-1560250097-0b93528c311a?w=400&q=80" alt="Ahmed Khan"></div>
-      <div class="exp-card-body">
-        <div class="exp-card-name">Ahmed Khan</div>
-        <div class="exp-card-spec">Landscape Designer · 8yrs</div>
-        <div class="exp-stars">★★★★★</div>
-        <span class="exp-avail">✅ Available</span>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ====== BOOKING FORM ====== -->
-<section class="book-sec" id="booking">
-  <div class="book-inner">
-    <div class="sec-tag">Book a Consultation</div>
-    <h2 class="sec-h2">Schedule Your Plant Care Session</h2>
-    <p class="sec-desc">Fill in your details and our team will confirm within 24 hours.</p>
-    <form class="bform" onsubmit="submitBooking(event)">
-      <div class="fg"><label>Full Name</label><input type="text" placeholder="Your full name" required></div>
-      <div class="fg"><label>Email Address</label><input type="email" placeholder="you@email.com" required></div>
-      <div class="fg"><label>Phone Number</label><input type="tel" placeholder="+92 300 0000000"></div>
-      <div class="fg"><label>Preferred Date</label><input type="date" required></div>
-      <div class="fg">
-        <label>Select Expert</label>
-        <select>
-          <option>Rania – Lead Horticulturist</option>
-          <option>Dr. Hamid Shah – Plant Pathologist</option>
-          <option>Sara Malik – Indoor Plant Specialist</option>
-          <option>Ahmed Khan – Landscape Designer</option>
-        </select>
-      </div>
-      <div class="fg">
-        <label>Consultation Type</label>
-        <select>
-          <option>Plant Selection & Advice</option>
-          <option>Plant Health Diagnosis</option>
-          <option>Garden Layout Planning</option>
-          <option>Indoor Plant Setup</option>
-          <option>General Care Consultation</option>
-        </select>
-      </div>
-      <div class="fg full"><label>Describe Your Query</label><textarea placeholder="Tell us about your plants or what help you need..."></textarea></div>
-      <div class="form-sub"><button type="submit" class="btn-sub">🌿 Confirm Booking</button></div>
-    </form>
-  </div>
-</section>
-
-<!-- ====== TESTIMONIALS ====== -->
-<section class="testi-sec" id="reviews">
-  <div style="text-align:center;margin-bottom:8px">
-    <div class="sec-tag" style="text-align:center">Customer Stories</div>
-    <h2 class="sec-h2" style="text-align:center">Loved by Plant Enthusiasts</h2>
-  </div>
-  <div class="testi-grid">
-    <div class="tcard"><div class="tq">"</div><div class="tstars">★★★★★</div><p class="ttxt">Rania personally helped me choose plants for my entire apartment. The quality is amazing — healthy, well-rooted, and beautifully packaged. Will always come back!</p><div class="tauthor"><div class="tav">A</div><div><div class="tname">Ayesha Tariq</div><div class="tloc">Lahore, Pakistan</div></div></div></div>
-    <div class="tcard"><div class="tq">"</div><div class="tstars">★★★★★</div><p class="ttxt">The consultation with Dr. Hamid was incredibly helpful. My rose bushes were dying and now they're blooming beautifully. GreenLeaf saved my garden completely!</p><div class="tauthor"><div class="tav">U</div><div><div class="tname">Usman Riaz</div><div class="tloc">Islamabad, Pakistan</div></div></div></div>
-    <div class="tcard"><div class="tq">"</div><div class="tstars">★★★★★</div><p class="ttxt">Ordered 12 plants online — all arrived fresh and on time. The wildflower seed pack already has sprouts after just 1 week. Incredible service, highly recommend!</p><div class="tauthor"><div class="tav">S</div><div><div class="tname">Sana Mirza</div><div class="tloc">Karachi, Pakistan</div></div></div></div>
-  </div>
-</section>
-
-<!-- ====== FOOTER ====== -->
-<footer>
-  <div class="footer-grid">
-    <div class="footer-brand">
-      <a href="#" class="nav-logo">Green<em>Leaf</em></a>
-      <p class="footer-desc">Pakistan's premier smart plant nursery — bringing nature closer to every home, one plant at a time.</p>
-      <p class="footer-owner">🌺 Founded & managed by Rania</p>
-    </div>
-    <div class="fcol"><h4>Shop</h4><ul><li><a href="#">Indoor Plants</a></li><li><a href="#">Outdoor Plants</a></li><li><a href="#">Flower Plants</a></li><li><a href="#">Seeds & Bulbs</a></li><li><a href="#">Garden Supplies</a></li></ul></div>
-    <div class="fcol"><h4>Services</h4><ul><li><a href="#">Book Consultation</a></li><li><a href="#">Plant Care Plans</a></li><li><a href="#">Landscape Design</a></li><li><a href="#">Plant Delivery</a></li><li><a href="#">Gift Plants</a></li></ul></div>
-    <div class="fcol"><h4>Contact</h4><ul><li><a href="#">📍 Islamabad, Pakistan</a></li><li><a href="#">📞 +92 300 1234567</a></li><li><a href="#">✉️ <span class="__cf_email__" data-cfemail="d2a0b3bcbbb392b5a0b7b7bcbeb7b3b4fca2b9">[email&#160;protected]</span></a></li><li><a href="#">🕒 Mon–Sat: 9am–7pm</a></li><li><a href="#" style="color:var(--gold)" onclick="event.preventDefault();openAdminModal()">🔒 Admin Panel</a></li></ul></div>
-  </div>
-  <div class="footer-bot">
-    <span>© 2025 GreenLeaf Smart Plant Nursery by Rania. All rights reserved.</span>
-    <span style="color:rgba(183,228,199,.25)">Built with 🌿 love for plants</span>
-  </div>
-</footer>
-
-<!-- ====== CART OVERLAY ====== -->
-<div class="cart-overlay" id="cartOverlay" onclick="toggleCart()"></div>
-<div class="cart-sidebar" id="cartSidebar">
-  <div class="cart-head">
-    <h3>🛒 Your Cart</h3>
-    <button class="cart-close" onclick="toggleCart()">✕</button>
-  </div>
-  <div class="cart-items" id="cartItems"></div>
-  <div class="cart-foot">
-    <div class="cart-total"><span>Total Amount</span><strong id="cartTotal">Rs. 0</strong></div>
-    <button class="checkout-btn" onclick="checkout()">Proceed to Checkout →</button>
+    <div class="login-hint">Demo: rania@greenleaf.pk / admin123</div>
   </div>
 </div>
 
-<!-- ====== AUTH MODAL ====== -->
-<div class="modal-overlay" id="authModal">
-  <div class="modal">
-    <button class="modal-close" onclick="closeAuth()">✕</button>
-    <div class="modal-tabs">
-      <button class="mtab active" id="tab-login" onclick="switchTab('login')">Login</button>
-      <button class="mtab" id="tab-register" onclick="switchTab('register')">Register</button>
-    </div>
-    <!-- Login Form -->
-    <div id="loginForm">
-      <h2>Welcome Back</h2>
-      <p>Login to your GreenLeaf account</p>
-      <div class="modal-err" id="loginErr"></div>
-      <div class="modal-ok" id="loginOk"></div>
-      <div class="mform">
-        <div class="mfg"><label>Email</label><input type="email" id="loginEmail" placeholder="your@email.com"></div>
-        <div class="mfg"><label>Password</label><input type="password" id="loginPass" placeholder="Your password"></div>
-        <button class="modal-btn" onclick="doLogin()">Login to Account</button>
-      </div>
-    </div>
-    <!-- Register Form -->
-    <div id="registerForm" style="display:none">
-      <h2>Join GreenLeaf</h2>
-      <p>Create your account to start shopping</p>
-      <div class="modal-err" id="regErr"></div>
-      <div class="modal-ok" id="regOk"></div>
-      <div class="mform">
-        <div class="mfg"><label>Full Name</label><input type="text" id="regName" placeholder="Your full name"></div>
-        <div class="mfg"><label>Email</label><input type="email" id="regEmail" placeholder="your@email.com"></div>
-        <div class="mfg"><label>Phone</label><input type="tel" id="regPhone" placeholder="+92 300 0000000"></div>
-        <div class="mfg"><label>City</label><input type="text" id="regCity" placeholder="Islamabad"></div>
-        <div class="mfg"><label>Password</label><input type="password" id="regPass" placeholder="Min 6 characters"></div>
-        <button class="modal-btn" onclick="doRegister()">Create Account</button>
-      </div>
-    </div>
-  </div>
-</div>
+<!-- ====== ADMIN LAYOUT ====== -->
+<div id="adminLayout">
 
-<!-- ====== ADMIN LOGIN MODAL ====== -->
-<div class="modal-overlay" id="adminModal" style="z-index:900">
-  <div class="modal" style="max-width:420px">
-    <button class="modal-close" onclick="closeAdminModal()">✕</button>
-    <div style="display:flex;align-items:center;gap:10px;margin-bottom:6px">
-      <span style="font-size:1.6rem">🔒</span>
-      <h2 style="font-family:'Cormorant Garamond',serif;font-size:1.75rem;color:var(--g1)">Admin Access</h2>
-    </div>
-    <p style="color:var(--txt3);font-size:.86rem;margin-bottom:22px">Enter admin credentials to access the panel</p>
-    <div class="modal-err" id="adminLoginErr"></div>
-    <div class="mform">
-      <div class="mfg"><label>Email</label><input type="email" id="adminEmailInput" placeholder="rania@greenleaf.pk" value="rania@greenleaf.pk"></div>
-      <div class="mfg"><label>Password</label><input type="password" id="adminPassInput" placeholder="Enter password" value="admin123"></div>
-      <button class="modal-btn" style="background:var(--g1)" onclick="doAdminLogin()">🔐 Enter Admin Panel</button>
-    </div>
-    <div style="text-align:center;font-size:.76rem;color:var(--txt3);margin-top:10px">Demo: rania@greenleaf.pk / admin123</div>
-  </div>
-</div>
-
-<!-- ====== ADMIN PANEL (inline, hidden by default) ====== -->
-<div id="adminPanelWrap" style="display:none;position:fixed;inset:0;z-index:950;background:#f0f5f2;overflow:hidden">
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet">
-  <style>
-    #adminPanelWrap{font-family:'Jost',sans-serif}
-    .adm-sidebar{position:absolute;top:0;left:0;bottom:0;width:240px;background:#0e2318;display:flex;flex-direction:column;z-index:10;border-right:1px solid rgba(82,183,136,.12)}
-    .adm-sb-logo{padding:18px 22px;border-bottom:1px solid rgba(82,183,136,.12);font-family:'Cormorant Garamond',serif;font-size:1.4rem;color:#b7e4c7}
-    .adm-sb-logo em{color:#c9a84c;font-style:italic}
-    .adm-sb-logo span{display:block;font-size:.65rem;color:rgba(183,228,199,.35);font-family:'Jost',sans-serif;letter-spacing:1px;text-transform:uppercase;margin-top:2px}
-    .adm-nav{flex:1;overflow-y:auto;padding:12px 0}
-    .adm-sec-label{font-size:.62rem;letter-spacing:2px;text-transform:uppercase;color:rgba(183,228,199,.28);padding:10px 22px 4px;font-weight:600}
-    .adm-link{display:flex;align-items:center;gap:10px;padding:10px 22px;color:rgba(183,228,199,.6);background:none;border:none;width:100%;text-align:left;font-family:'Jost',sans-serif;font-size:.86rem;cursor:pointer;transition:all .2s}
-    .adm-link:hover{background:rgba(82,183,136,.1);color:#52b788}
-    .adm-link.active{background:rgba(82,183,136,.16);color:#52b788;border-right:3px solid #52b788}
-    .adm-link .adm-ic{font-size:1rem;width:20px;text-align:center}
-    .adm-link .adm-badge{margin-left:auto;background:#c07050;color:#fff;border-radius:50px;font-size:.62rem;padding:2px 7px;font-weight:700}
-    .adm-footer{padding:14px 22px;border-top:1px solid rgba(82,183,136,.12)}
-    .adm-user{display:flex;align-items:center;gap:9px;margin-bottom:10px}
-    .adm-av{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,#52b788,#c9a84c);display:flex;align-items:center;justify-content:center;font-family:'Cormorant Garamond',serif;font-size:1rem;color:#0e2318;font-weight:700}
-    .adm-uname{font-size:.82rem;color:#b7e4c7;font-weight:500}
-    .adm-urole{font-size:.68rem;color:rgba(183,228,199,.4)}
-    .adm-logout-btn{width:100%;background:rgba(192,112,80,.15);color:#c07050;border:1px solid rgba(192,112,80,.3);padding:7px;border-radius:8px;cursor:pointer;font-family:'Jost',sans-serif;font-size:.8rem;transition:all .25s}
-    .adm-logout-btn:hover{background:#c07050;color:#fff}
-    .adm-topnav{position:absolute;top:0;left:240px;right:0;height:62px;background:#fff;border-bottom:1px solid #e0ead8;display:flex;align-items:center;justify-content:space-between;padding:0 28px;z-index:9}
-    .adm-page-title{font-family:'Cormorant Garamond',serif;font-size:1.4rem;color:#0e2318}
-    .adm-back-btn{background:#f0f5f2;border:1px solid #e0ead8;padding:7px 16px;border-radius:8px;cursor:pointer;font-family:'Jost',sans-serif;font-size:.82rem;color:#2d4a38;transition:all .25s}
-    .adm-back-btn:hover{background:#2d6a4f;color:#fff}
-    .adm-main{position:absolute;top:62px;left:240px;right:0;bottom:0;overflow-y:auto;padding:24px 28px;background:#f0f5f2}
-    .adm-page{display:none}.adm-page.active{display:block}
-    .adm-stats{display:grid;grid-template-columns:repeat(6,1fr);gap:14px;margin-bottom:24px}
-    .adm-scard{background:#fff;border-radius:14px;padding:18px 16px;box-shadow:0 2px 10px rgba(14,35,24,.06);border:1px solid #e0ead8}
-    .adm-scard.g{border-top:3px solid #52b788}.adm-scard.gd{border-top:3px solid #c9a84c}.adm-scard.r{border-top:3px solid #c07050}.adm-scard.b{border-top:3px solid #4a90e2}
-    .adm-sval{font-family:'Cormorant Garamond',serif;font-size:1.8rem;color:#0e2318;font-weight:700}
-    .adm-slab{font-size:.7rem;color:#6b8070;text-transform:uppercase;letter-spacing:.5px;margin-top:3px}
-    .adm-sic{font-size:1.4rem;margin-bottom:7px}
-    .adm-dash-grid{display:grid;grid-template-columns:2fr 1fr;gap:18px}
-    .adm-card{background:#fff;border-radius:14px;padding:22px;box-shadow:0 2px 10px rgba(14,35,24,.06);border:1px solid #e0ead8}
-    .adm-card h3{font-family:'Cormorant Garamond',serif;font-size:1.2rem;color:#0e2318;margin-bottom:16px;padding-bottom:10px;border-bottom:1px solid #e0ead8}
-    .adm-tbl{width:100%;border-collapse:collapse;font-size:.83rem}
-    .adm-tbl th{text-align:left;padding:9px 10px;background:#f0f5f2;color:#6b8070;font-size:.7rem;letter-spacing:.5px;text-transform:uppercase;font-weight:600}
-    .adm-tbl td{padding:11px 10px;border-bottom:1px solid #e0ead8;color:#0e2318;vertical-align:middle}
-    .adm-tbl tr:hover td{background:#f8faf8}
-    .adm-tbl img{width:42px;height:42px;object-fit:cover;border-radius:7px}
-    .adm-sb{display:inline-block;padding:3px 10px;border-radius:50px;font-size:.7rem;font-weight:600}
-    .adm-sb.pending{background:#fff8e0;color:#b88a10}.adm-sb.confirmed{background:#e0f5ea;color:#2d6a4f}.adm-sb.shipped{background:#e0eeff;color:#4a90e2}.adm-sb.delivered{background:#d8f3e0;color:#1c4030}.adm-sb.cancelled{background:#ffe0e0;color:#e05555}.adm-sb.completed{background:#d8f3e0;color:#1c4030}
-    .adm-pg-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap;gap:10px}
-    .adm-pg-head h2{font-family:'Cormorant Garamond',serif;font-size:1.6rem;color:#0e2318}
-    .adm-add-btn{background:#2d6a4f;color:#fff;border:none;padding:9px 18px;border-radius:9px;cursor:pointer;font-family:'Jost',sans-serif;font-size:.85rem;font-weight:600;transition:background .25s}
-    .adm-add-btn:hover{background:#1c4030}
-    .adm-search{display:flex;align-items:center;gap:7px;background:#fff;border:1px solid #e0ead8;border-radius:9px;padding:7px 12px}
-    .adm-search input{border:none;outline:none;font-family:'Jost',sans-serif;font-size:.85rem;color:#0e2318;min-width:160px}
-    .adm-act-btn{border:none;padding:5px 12px;border-radius:6px;cursor:pointer;font-family:'Jost',sans-serif;font-size:.76rem;font-weight:500;transition:all .2s}
-    .adm-edit{background:#e8f4ff;color:#4a90e2}.adm-edit:hover{background:#4a90e2;color:#fff}
-    .adm-del{background:#ffe8e8;color:#e05555}.adm-del:hover{background:#e05555;color:#fff}
-    .adm-tbl-wrap{background:#fff;border-radius:14px;box-shadow:0 2px 10px rgba(14,35,24,.06);overflow:hidden;border:1px solid #e0ead8}
-    /* Add plant form modal inside admin */
-    .adm-fmodal-ov{position:absolute;inset:0;background:rgba(0,0,0,.45);z-index:20;display:none;align-items:center;justify-content:center;backdrop-filter:blur(4px)}
-    .adm-fmodal-ov.open{display:flex}
-    .adm-fmodal{background:#fff;border-radius:18px;padding:28px 32px;width:600px;max-width:95%;max-height:88vh;overflow-y:auto;position:relative}
-    .adm-fmodal h3{font-family:'Cormorant Garamond',serif;font-size:1.5rem;color:#0e2318;margin-bottom:18px}
-    .adm-fmodal-close{position:absolute;top:12px;right:16px;background:none;border:none;font-size:1.3rem;cursor:pointer;color:#6b8070}
-    .adm-fgrid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-    .adm-fgrid .full{grid-column:span 2}
-    .adm-fg{display:flex;flex-direction:column;gap:5px}
-    .adm-fg label{font-size:.72rem;color:#6b8070;letter-spacing:.5px;text-transform:uppercase;font-weight:600}
-    .adm-fg input,.adm-fg select,.adm-fg textarea{border:1.5px solid #e0ead8;border-radius:9px;padding:10px 13px;font-family:'Jost',sans-serif;font-size:.88rem;color:#0e2318;outline:none;transition:border .25s}
-    .adm-fg input:focus,.adm-fg select:focus,.adm-fg textarea:focus{border-color:#52b788}
-    .adm-fg textarea{resize:vertical;min-height:80px}
-    .adm-imgprev{width:100%;height:140px;border-radius:9px;overflow:hidden;background:#f0f5f2;border:1.5px dashed #e0ead8;display:flex;align-items:center;justify-content:center;margin-top:6px;font-size:.8rem;color:#6b8070}
-    .adm-imgprev img{width:100%;height:100%;object-fit:cover}
-    .adm-fbtns{display:flex;gap:8px;margin-top:16px;justify-content:flex-end}
-    .adm-fbtn-cancel{background:#f0f5f2;border:1px solid #e0ead8;color:#2d4a38;padding:9px 20px;border-radius:8px;cursor:pointer;font-family:'Jost',sans-serif;font-size:.88rem}
-    .adm-fbtn-save{background:#2d6a4f;color:#fff;border:none;padding:9px 24px;border-radius:8px;cursor:pointer;font-family:'Jost',sans-serif;font-size:.88rem;font-weight:600}
-    .quick-item{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid #e0ead8}
-    .quick-item:last-child{border-bottom:none}
-    .q-ic{width:34px;height:34px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:.95rem;flex-shrink:0}
-    .q-n{font-size:.85rem;color:#0e2318;font-weight:500}
-    .q-s{font-size:.73rem;color:#6b8070}
-    .q-v{margin-left:auto;font-weight:700;font-size:.88rem;color:#2d6a4f}
-  </style>
-
-  <!-- ADMIN SIDEBAR -->
-  <aside class="adm-sidebar">
-    <div class="adm-sb-logo">Green<em>Leaf</em><span>Admin Panel</span></div>
-    <nav class="adm-nav">
-      <div class="adm-sec-label">Main</div>
-      <button class="adm-link active" onclick="admShowPage('dashboard',this)"><span class="adm-ic">📊</span>Dashboard</button>
-      <button class="adm-link" onclick="admShowPage('plants',this)"><span class="adm-ic">🌿</span>Plants<span class="adm-badge" id="admBadgePlants">8</span></button>
-      <button class="adm-link" onclick="admShowPage('supplies',this)"><span class="adm-ic">🌱</span>Seeds & Supplies</button>
-      <button class="adm-link" onclick="admShowPage('orders',this)"><span class="adm-ic">📦</span>Orders<span class="adm-badge" id="admBadgeOrders">2</span></button>
-      <div class="adm-sec-label">Management</div>
-      <button class="adm-link" onclick="admShowPage('consultations',this)"><span class="adm-ic">📅</span>Consultations<span class="adm-badge" id="admBadgeConsult">3</span></button>
-      <button class="adm-link" onclick="admShowPage('experts',this)"><span class="adm-ic">👨‍🌾</span>Experts</button>
-      <button class="adm-link" onclick="admShowPage('customers',this)"><span class="adm-ic">👥</span>Customers</button>
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sb-logo">Green<em>Leaf</em><span>Admin Panel</span></div>
+    <nav class="sb-nav">
+      <div class="sb-section">Main</div>
+      <button class="sb-link active" onclick="showPage('dashboard')"><span class="ic">📊</span> Dashboard</button>
+      <button class="sb-link" onclick="showPage('plants')"><span class="ic">🌿</span> Plants<span class="badge" id="badgePlants">8</span></button>
+      <button class="sb-link" onclick="showPage('supplies')"><span class="ic">🌱</span> Seeds & Supplies</button>
+      <button class="sb-link" onclick="showPage('orders')"><span class="ic">📦</span> Orders<span class="badge" id="badgeOrders">3</span></button>
+      <button class="sb-section" style="margin-top:8px">Management</div>
+      <button class="sb-link" onclick="showPage('consultations')"><span class="ic">📅</span> Consultations<span class="badge" id="badgeConsult">5</span></button>
+      <button class="sb-link" onclick="showPage('experts')"><span class="ic">👨‍🌾</span> Our Experts</button>
+      <button class="sb-link" onclick="showPage('customers')"><span class="ic">👥</span> Customers</button>
+      <div class="sb-section">Website</div>
+      <button class="sb-link" onclick="window.open('index.html','_blank')"><span class="ic">🌐</span> View Website</button>
     </nav>
-    <div class="adm-footer">
-      <div class="adm-user">
-        <div class="adm-av">R</div>
-        <div><div class="adm-uname">Rania</div><div class="adm-urole">Super Admin</div></div>
+    <div class="sb-footer">
+      <div class="sb-user">
+        <div class="sb-av">R</div>
+        <div><div class="sb-uname">Rania Al-Farooq</div><div class="sb-urole">Super Admin</div></div>
       </div>
-      <button class="adm-logout-btn" onclick="admLogout()">🔓 Logout</button>
+      <button class="sb-logout" onclick="adminLogout()">🔓 Logout</button>
     </div>
   </aside>
 
-  <!-- ADMIN TOP NAV -->
-  <div class="adm-topnav">
-    <div class="adm-page-title" id="admPageTitle">Dashboard</div>
-    <button class="adm-back-btn" onclick="admLogout()">← Back to Website</button>
+  <!-- TOP NAV -->
+  <div class="topnav">
+    <div class="topnav-title" id="pageTitle">Dashboard</div>
+    <div class="topnav-right">
+      <span class="top-date" id="topDate"></span>
+      <button class="notif-btn">🔔 <div class="notif-dot"></div></button>
+    </div>
   </div>
 
-  <!-- ADMIN MAIN CONTENT -->
-  <main class="adm-main">
+  <!-- MAIN CONTENT -->
+  <main class="main-content">
 
-    <!-- DASHBOARD -->
-    <div id="adm-page-dashboard" class="adm-page active">
-      <div class="adm-stats">
-        <div class="adm-scard g"><div class="adm-sic">🌿</div><div class="adm-sval" id="adm-s-plants">8</div><div class="adm-slab">Total Plants</div></div>
-        <div class="adm-scard gd"><div class="adm-sic">💰</div><div class="adm-sval" id="adm-s-rev">Rs.48K</div><div class="adm-slab">Revenue</div></div>
-        <div class="adm-scard b"><div class="adm-sic">📦</div><div class="adm-sval" id="adm-s-orders">6</div><div class="adm-slab">Orders</div></div>
-        <div class="adm-scard r"><div class="adm-sic">👥</div><div class="adm-sval" id="adm-s-cust">6</div><div class="adm-slab">Customers</div></div>
-        <div class="adm-scard g"><div class="adm-sic">📅</div><div class="adm-sval" id="adm-s-consult">3</div><div class="adm-slab">Pending Sessions</div></div>
-        <div class="adm-scard gd"><div class="adm-sic">⏳</div><div class="adm-sval" id="adm-s-pending">2</div><div class="adm-slab">Pending Orders</div></div>
+    <!-- ======= DASHBOARD PAGE ======= -->
+    <div id="page-dashboard" class="page active">
+      <div class="stats-row">
+        <div class="stat-card green"><div class="sc-ic">🌿</div><div class="sc-val" id="stat-plants">8</div><div class="sc-lab">Total Plants</div></div>
+        <div class="stat-card gold"><div class="sc-ic">💰</div><div class="sc-val" id="stat-revenue">Rs.48K</div><div class="sc-lab">Revenue</div></div>
+        <div class="stat-card blue"><div class="sc-ic">📦</div><div class="sc-val" id="stat-orders">24</div><div class="sc-lab">Orders</div></div>
+        <div class="stat-card red"><div class="sc-ic">👥</div><div class="sc-val" id="stat-customers">142</div><div class="sc-lab">Customers</div></div>
+        <div class="stat-card green"><div class="sc-ic">📅</div><div class="sc-val" id="stat-consult">5</div><div class="sc-lab">Pending Sessions</div></div>
+        <div class="stat-card gold"><div class="sc-ic">⏳</div><div class="sc-val" id="stat-pending">3</div><div class="sc-lab">Pending Orders</div></div>
       </div>
-      <div class="adm-dash-grid">
-        <div class="adm-card"><h3>Recent Orders</h3><table class="adm-tbl"><thead><tr><th>#</th><th>Customer</th><th>Amount</th><th>Status</th><th>Date</th></tr></thead><tbody id="adm-recent-orders"></tbody></table></div>
-        <div class="adm-card"><h3>Quick Stats</h3><div id="adm-quick-stats"></div></div>
-      </div>
-    </div>
-
-    <!-- PLANTS -->
-    <div id="adm-page-plants" class="adm-page">
-      <div class="adm-pg-head">
-        <h2>🌿 Plant Management</h2>
-        <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
-          <div class="adm-search">🔍<input type="text" id="adm-plant-search" placeholder="Search plants..." oninput="admFilterPlants()"></div>
-          <button class="adm-add-btn" onclick="admOpenPlantModal()">+ Add Plant</button>
+      <div class="dash-grid">
+        <div class="dash-card">
+          <h3>Recent Orders</h3>
+          <table class="data-table">
+            <thead><tr><th>#</th><th>Customer</th><th>Amount</th><th>Status</th><th>Date</th></tr></thead>
+            <tbody id="recentOrdersBody"></tbody>
+          </table>
+        </div>
+        <div class="dash-card">
+          <h3>Quick Stats</h3>
+          <div id="quickStats"></div>
         </div>
       </div>
-      <div class="adm-tbl-wrap"><table class="adm-tbl"><thead><tr><th>Image</th><th>Name</th><th>Category</th><th>Price</th><th>Stock</th><th>Featured</th><th>Actions</th></tr></thead><tbody id="adm-plants-body"></tbody></table></div>
     </div>
 
-    <!-- SUPPLIES -->
-    <div id="adm-page-supplies" class="adm-page">
-      <div class="adm-pg-head"><h2>🌱 Seeds & Supplies</h2><button class="adm-add-btn" onclick="admOpenSupplyModal()">+ Add Supply</button></div>
-      <div class="adm-tbl-wrap"><table class="adm-tbl"><thead><tr><th>Image</th><th>Name</th><th>Type</th><th>Price</th><th>Stock</th><th>Actions</th></tr></thead><tbody id="adm-supplies-body"></tbody></table></div>
+    <!-- ======= PLANTS PAGE ======= -->
+    <div id="page-plants" class="page">
+      <div class="page-header">
+        <h2>🌿 Plant Management</h2>
+        <div class="hdr-actions">
+          <div class="search-box">🔍<input type="text" id="plantSearch" placeholder="Search plants..." oninput="filterPlantsTable()"></div>
+          <button class="btn-add" onclick="openPlantModal()">+ Add New Plant</button>
+        </div>
+      </div>
+      <div style="background:#fff;border-radius:16px;box-shadow:0 2px 12px rgba(14,35,24,.06);overflow:hidden;border:1px solid var(--border)">
+        <table class="data-table" id="plantsTable">
+          <thead><tr><th>Image</th><th>Plant Name</th><th>Category</th><th>Price</th><th>Stock</th><th>Care Level</th><th>Featured</th><th>Actions</th></tr></thead>
+          <tbody id="plantsBody"></tbody>
+        </table>
+      </div>
     </div>
 
-    <!-- ORDERS -->
-    <div id="adm-page-orders" class="adm-page">
-      <div class="adm-pg-head">
+    <!-- ======= SUPPLIES PAGE ======= -->
+    <div id="page-supplies" class="page">
+      <div class="page-header">
+        <h2>🌱 Seeds & Supplies</h2>
+        <button class="btn-add" onclick="openSupplyModal()">+ Add Supply</button>
+      </div>
+      <div style="background:#fff;border-radius:16px;box-shadow:0 2px 12px rgba(14,35,24,.06);overflow:hidden;border:1px solid var(--border)">
+        <table class="data-table">
+          <thead><tr><th>Image</th><th>Name</th><th>Type</th><th>Price</th><th>Stock</th><th>Actions</th></tr></thead>
+          <tbody id="suppliesBody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ======= ORDERS PAGE ======= -->
+    <div id="page-orders" class="page">
+      <div class="page-header">
         <h2>📦 Order Management</h2>
-        <select id="adm-order-filter" onchange="admRenderOrders()" style="border:1px solid #e0ead8;border-radius:8px;padding:8px 12px;font-family:'Jost',sans-serif;font-size:.85rem;outline:none;color:#0e2318">
-          <option value="all">All Orders</option>
-          <option value="Pending">Pending</option>
-          <option value="Confirmed">Confirmed</option>
-          <option value="Shipped">Shipped</option>
-          <option value="Delivered">Delivered</option>
-          <option value="Cancelled">Cancelled</option>
-        </select>
+        <div class="hdr-actions">
+          <select onchange="filterOrders(this.value)" style="border:1px solid var(--border);border-radius:8px;padding:9px 14px;font-family:'Jost',sans-serif;font-size:.88rem;outline:none;color:var(--txt1)">
+            <option value="all">All Orders</option>
+            <option value="Pending">Pending</option>
+            <option value="Confirmed">Confirmed</option>
+            <option value="Shipped">Shipped</option>
+            <option value="Delivered">Delivered</option>
+            <option value="Cancelled">Cancelled</option>
+          </select>
+        </div>
       </div>
-      <div class="adm-tbl-wrap"><table class="adm-tbl"><thead><tr><th>#</th><th>Customer</th><th>Items</th><th>Total</th><th>Payment</th><th>Status</th><th>Date</th></tr></thead><tbody id="adm-orders-body"></tbody></table></div>
-    </div>
-
-    <!-- CONSULTATIONS -->
-    <div id="adm-page-consultations" class="adm-page">
-      <div class="adm-pg-head">
-        <h2>📅 Consultations</h2>
-        <select id="adm-consult-filter" onchange="admRenderConsults()" style="border:1px solid #e0ead8;border-radius:8px;padding:8px 12px;font-family:'Jost',sans-serif;font-size:.85rem;outline:none;color:#0e2318">
-          <option value="all">All Sessions</option>
-          <option value="Pending">Pending</option>
-          <option value="Confirmed">Confirmed</option>
-          <option value="Completed">Completed</option>
-          <option value="Cancelled">Cancelled</option>
-        </select>
+      <div style="background:#fff;border-radius:16px;box-shadow:0 2px 12px rgba(14,35,24,.06);overflow:hidden;border:1px solid var(--border)">
+        <table class="data-table">
+          <thead><tr><th>#</th><th>Customer</th><th>Items</th><th>Total</th><th>Payment</th><th>Status</th><th>Date</th><th>Actions</th></tr></thead>
+          <tbody id="ordersBody"></tbody>
+        </table>
       </div>
-      <div class="adm-tbl-wrap"><table class="adm-tbl"><thead><tr><th>#</th><th>Customer</th><th>Expert</th><th>Type</th><th>Date</th><th>Status</th><th>Action</th></tr></thead><tbody id="adm-consults-body"></tbody></table></div>
     </div>
 
-    <!-- EXPERTS -->
-    <div id="adm-page-experts" class="adm-page">
-      <div class="adm-pg-head"><h2>👨‍🌾 Gardening Experts</h2><button class="adm-add-btn" onclick="admOpenExpertModal()">+ Add Expert</button></div>
-      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:16px" id="adm-experts-grid"></div>
+    <!-- ======= CONSULTATIONS PAGE ======= -->
+    <div id="page-consultations" class="page">
+      <div class="page-header">
+        <h2>📅 Consultation Management</h2>
+        <div class="hdr-actions">
+          <select onchange="filterConsultations(this.value)" style="border:1px solid var(--border);border-radius:8px;padding:9px 14px;font-family:'Jost',sans-serif;font-size:.88rem;outline:none;color:var(--txt1)">
+            <option value="all">All Sessions</option>
+            <option value="Pending">Pending</option>
+            <option value="Confirmed">Confirmed</option>
+            <option value="Completed">Completed</option>
+            <option value="Cancelled">Cancelled</option>
+          </select>
+        </div>
+      </div>
+      <div style="background:#fff;border-radius:16px;box-shadow:0 2px 12px rgba(14,35,24,.06);overflow:hidden;border:1px solid var(--border)">
+        <table class="data-table">
+          <thead><tr><th>#</th><th>Customer</th><th>Expert</th><th>Type</th><th>Date</th><th>Time</th><th>Status</th><th>Actions</th></tr></thead>
+          <tbody id="consultBody"></tbody>
+        </table>
+      </div>
     </div>
 
-    <!-- CUSTOMERS -->
-    <div id="adm-page-customers" class="adm-page">
-      <div class="adm-pg-head"><h2>👥 Customers</h2></div>
-      <div class="adm-tbl-wrap"><table class="adm-tbl"><thead><tr><th>#</th><th>Name</th><th>Email</th><th>City</th><th>Orders</th><th>Joined</th><th>Action</th></tr></thead><tbody id="adm-customers-body"></tbody></table></div>
+    <!-- ======= EXPERTS PAGE ======= -->
+    <div id="page-experts" class="page">
+      <div class="page-header">
+        <h2>👨‍🌾 Gardening Experts</h2>
+        <button class="btn-add" onclick="openExpertModal()">+ Add Expert</button>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:20px" id="expertsGrid"></div>
+    </div>
+
+    <!-- ======= CUSTOMERS PAGE ======= -->
+    <div id="page-customers" class="page">
+      <div class="page-header">
+        <h2>👥 Customer Management</h2>
+        <div class="search-box">🔍<input type="text" placeholder="Search customers..."></div>
+      </div>
+      <div style="background:#fff;border-radius:16px;box-shadow:0 2px 12px rgba(14,35,24,.06);overflow:hidden;border:1px solid var(--border)">
+        <table class="data-table">
+          <thead><tr><th>#</th><th>Name</th><th>Email</th><th>Phone</th><th>City</th><th>Orders</th><th>Joined</th><th>Actions</th></tr></thead>
+          <tbody id="customersBody"></tbody>
+        </table>
+      </div>
     </div>
 
   </main>
+</div>
 
-  <!-- ADD PLANT MODAL -->
-  <div class="adm-fmodal-ov" id="admPlantModal">
-    <div class="adm-fmodal">
-      <button class="adm-fmodal-close" onclick="admClosePlantModal()">✕</button>
-      <h3 id="admPlantModalTitle">Add New Plant</h3>
-      <input type="hidden" id="admEditPlantId">
-      <div class="adm-fgrid">
-        <div class="adm-fg"><label>Plant Name *</label><input type="text" id="admPName" placeholder="e.g. Peace Lily"></div>
-        <div class="adm-fg"><label>Category</label><select id="admPCat"><option>Indoor Plants</option><option>Flowering Plants</option><option>Outdoor Garden</option><option>Succulents & Cacti</option><option>Herb Garden</option></select></div>
-        <div class="adm-fg"><label>Price (Rs.) *</label><input type="number" id="admPPrice"></div>
-        <div class="adm-fg"><label>Old Price</label><input type="number" id="admPOldPrice"></div>
-        <div class="adm-fg"><label>Stock</label><input type="number" id="admPStock" value="50"></div>
-        <div class="adm-fg"><label>Care Level</label><select id="admPCare"><option>Easy</option><option>Medium</option><option>Hard</option></select></div>
-        <div class="adm-fg"><label>Water</label><select id="admPWater"><option>Low</option><option>Medium</option><option>High</option></select></div>
-        <div class="adm-fg"><label>Sunlight</label><select id="admPSun"><option>Full Sun</option><option>Partial</option><option>Shade</option></select></div>
-        <div class="adm-fg full"><label>Description</label><textarea id="admPDesc"></textarea></div>
-        <div class="adm-fg full"><label>Image URL</label><input type="text" id="admPImg" placeholder="https://images.unsplash.com/..." oninput="admPreviewImg()"></div>
-        <div class="adm-fg full"><label>Preview</label><div class="adm-imgprev" id="admImgPrev">🌿 Enter URL to preview</div></div>
-        <div class="adm-fg full" style="flex-direction:row;align-items:center;gap:8px"><input type="checkbox" id="admPFeatured" style="width:16px;height:16px;accent-color:#52b788"><label style="text-transform:none;letter-spacing:0;font-size:.88rem;color:#0e2318">Mark as Featured</label></div>
+<!-- ====== PLANT FORM MODAL ====== -->
+<div class="fmodal-overlay" id="plantModal">
+  <div class="fmodal">
+    <button class="fmodal-close" onclick="closePlantModal()">✕</button>
+    <h3 id="plantModalTitle">Add New Plant</h3>
+    <input type="hidden" id="editPlantId">
+    <div class="fgrid">
+      <div class="ffg"><label>Plant Name *</label><input type="text" id="pName" placeholder="e.g. Peace Lily"></div>
+      <div class="ffg"><label>Category *</label><select id="pCat"><option>Indoor Plants</option><option>Flowering Plants</option><option>Outdoor Garden</option><option>Succulents & Cacti</option><option>Herb Garden</option></select></div>
+      <div class="ffg"><label>Price (Rs.) *</label><input type="number" id="pPrice" placeholder="850"></div>
+      <div class="ffg"><label>Old Price (Rs.)</label><input type="number" id="pOldPrice" placeholder="Optional"></div>
+      <div class="ffg"><label>Stock Quantity</label><input type="number" id="pStock" placeholder="50"></div>
+      <div class="ffg"><label>Care Level</label><select id="pCare"><option>Easy</option><option>Medium</option><option>Hard</option></select></div>
+      <div class="ffg"><label>Water Needs</label><select id="pWater"><option>Low</option><option>Medium</option><option>High</option></select></div>
+      <div class="ffg"><label>Sunlight</label><select id="pSun"><option>Full Sun</option><option>Partial</option><option>Shade</option></select></div>
+      <div class="ffg full"><label>Description</label><textarea id="pDesc" placeholder="Describe the plant..."></textarea></div>
+      <div class="ffg full"><label>Image URL (or upload)</label><input type="text" id="pImgUrl" placeholder="https://images.unsplash.com/..." oninput="previewPlantImg()"></div>
+      <div class="ffg full">
+        <label>Image Preview</label>
+        <div class="img-preview" id="pImgPreview"><div class="img-placeholder">🌿<br>Enter URL above to preview</div></div>
       </div>
-      <div class="adm-fbtns"><button class="adm-fbtn-cancel" onclick="admClosePlantModal()">Cancel</button><button class="adm-fbtn-save" onclick="admSavePlant()">💾 Save Plant</button></div>
+      <div class="ffg full" style="flex-direction:row;align-items:center;gap:10px">
+        <input type="checkbox" id="pFeatured" style="width:18px;height:18px;accent-color:var(--g4)">
+        <label style="text-transform:none;letter-spacing:0;font-size:.9rem;color:var(--txt1)">Mark as Featured Product</label>
+      </div>
+    </div>
+    <div class="fmodal-btns">
+      <button class="fbtn-cancel" onclick="closePlantModal()">Cancel</button>
+      <button class="fbtn-save" onclick="savePlant()">💾 Save Plant</button>
     </div>
   </div>
+</div>
 
-  <!-- ADD SUPPLY MODAL -->
-  <div class="adm-fmodal-ov" id="admSupplyModal">
-    <div class="adm-fmodal">
-      <button class="adm-fmodal-close" onclick="admCloseSupplyModal()">✕</button>
-      <h3>Add Garden Supply</h3>
-      <div class="adm-fgrid">
-        <div class="adm-fg"><label>Name</label><input type="text" id="admSName"></div>
-        <div class="adm-fg"><label>Type</label><select id="admSType"><option>Seeds</option><option>Fertilizer</option><option>Pots</option><option>Soil</option><option>Tools</option></select></div>
-        <div class="adm-fg"><label>Price</label><input type="number" id="admSPrice"></div>
-        <div class="adm-fg"><label>Stock</label><input type="number" id="admSStock"></div>
-        <div class="adm-fg full"><label>Image URL</label><input type="text" id="admSImg"></div>
-      </div>
-      <div class="adm-fbtns"><button class="adm-fbtn-cancel" onclick="admCloseSupplyModal()">Cancel</button><button class="adm-fbtn-save" onclick="admSaveSupply()">💾 Save</button></div>
+<!-- ====== SUPPLY FORM MODAL ====== -->
+<div class="fmodal-overlay" id="supplyModal">
+  <div class="fmodal">
+    <button class="fmodal-close" onclick="closeSupplyModal()">✕</button>
+    <h3>Add Garden Supply</h3>
+    <div class="fgrid">
+      <div class="ffg"><label>Supply Name</label><input type="text" id="sName" placeholder="Wildflower Seed Mix"></div>
+      <div class="ffg"><label>Type</label><select id="sType"><option>Seeds</option><option>Fertilizer</option><option>Pots</option><option>Soil</option><option>Tools</option></select></div>
+      <div class="ffg"><label>Price (Rs.)</label><input type="number" id="sPrice"></div>
+      <div class="ffg"><label>Stock</label><input type="number" id="sStock"></div>
+      <div class="ffg full"><label>Description</label><textarea id="sDesc"></textarea></div>
+      <div class="ffg full"><label>Image URL</label><input type="text" id="sImgUrl" placeholder="https://..."></div>
+    </div>
+    <div class="fmodal-btns">
+      <button class="fbtn-cancel" onclick="closeSupplyModal()">Cancel</button>
+      <button class="fbtn-save" onclick="saveSupply()">💾 Save Supply</button>
     </div>
   </div>
+</div>
 
-  <!-- ADD EXPERT MODAL -->
-  <div class="adm-fmodal-ov" id="admExpertModal">
-    <div class="adm-fmodal">
-      <button class="adm-fmodal-close" onclick="admCloseExpertModal()">✕</button>
-      <h3>Add Expert</h3>
-      <div class="adm-fgrid">
-        <div class="adm-fg"><label>Full Name</label><input type="text" id="admEName"></div>
-        <div class="adm-fg"><label>Specialization</label><input type="text" id="admESpec"></div>
-        <div class="adm-fg"><label>Email</label><input type="email" id="admEEmail"></div>
-        <div class="adm-fg"><label>Phone</label><input type="tel" id="admEPhone"></div>
-        <div class="adm-fg full"><label>Image URL</label><input type="text" id="admEImg"></div>
-      </div>
-      <div class="adm-fbtns"><button class="adm-fbtn-cancel" onclick="admCloseExpertModal()">Cancel</button><button class="adm-fbtn-save" onclick="admSaveExpert()">💾 Save</button></div>
+<!-- ====== EXPERT FORM MODAL ====== -->
+<div class="fmodal-overlay" id="expertModal">
+  <div class="fmodal">
+    <button class="fmodal-close" onclick="closeExpertModal()">✕</button>
+    <h3>Add Gardening Expert</h3>
+    <div class="fgrid">
+      <div class="ffg"><label>Full Name</label><input type="text" id="eName" placeholder="Dr. Expert Name"></div>
+      <div class="ffg"><label>Email</label><input type="email" id="eEmail"></div>
+      <div class="ffg"><label>Phone</label><input type="tel" id="ePhone"></div>
+      <div class="ffg"><label>Specialization</label><input type="text" id="eSpec" placeholder="Plant Pathologist"></div>
+      <div class="ffg full"><label>Bio</label><textarea id="eBio"></textarea></div>
+      <div class="ffg full"><label>Profile Image URL</label><input type="text" id="eImg" placeholder="https://..."></div>
+    </div>
+    <div class="fmodal-btns">
+      <button class="fbtn-cancel" onclick="closeExpertModal()">Cancel</button>
+      <button class="fbtn-save" onclick="saveExpert()">💾 Save Expert</button>
     </div>
   </div>
-
 </div>
 
 <!-- ====== TOAST ====== -->
-<div class="toast" id="toast"></div>
+<div class="toast" id="aToast"></div>
 
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+<script>
 // ======================================
-// PLANTS DATA (static for demo — in
-// production these come from PHP APIs)
+// DATA STORES (localStorage-based for demo)
 // ======================================
-const PLANTS = [
-  {id:1,name:"Peace Lily",cat:"indoor",category:"Indoor · Air Purifying",desc:"Elegant white blooms, air purifying. Perfect for low light spaces.",price:850,oldPrice:1100,img:"https://images.unsplash.com/photo-1487530811176-3780de880c2d?w=500&q=80",badge:"Indoor",care:"Easy",water:"Medium",sun:"Shade"},
-  {id:2,name:"Red Rose Bush",cat:"flower",category:"Outdoor · Flowering",desc:"Classic fragrant roses. Rich red blooms from spring to autumn.",price:1200,oldPrice:1600,img:"https://images.unsplash.com/photo-1455659817273-f96807779a8a?w=500&q=80",badge:"sale",care:"Medium",water:"High",sun:"Full Sun"},
-  {id:3,name:"Monstera Deliciosa",cat:"indoor",category:"Indoor · Tropical",desc:"Iconic split leaves. Statement piece for any modern interior.",price:2500,oldPrice:null,img:"https://images.unsplash.com/photo-1502977249166-824b3a8a4d6d?w=500&q=80",badge:"trending",care:"Easy",water:"Medium",sun:"Partial"},
-  {id:4,name:"White Jasmine",cat:"flower",category:"Outdoor · Fragrant",desc:"Intensely fragrant white flowers. Great for balconies and trellises.",price:750,oldPrice:null,img:"https://images.unsplash.com/photo-1519378045-f2c63ea8429f?w=500&q=80",badge:"Fragrant",care:"Medium",water:"Medium",sun:"Full Sun"},
-  {id:5,name:"Rainbow Tulips",cat:"flower",category:"Seasonal · Flowering",desc:"Vibrant spring bloomers in mixed colors. Perfect for garden beds.",price:480,oldPrice:680,img:"https://images.unsplash.com/photo-1444021465936-c6ca81d39b84?w=500&q=80",badge:"sale",care:"Easy",water:"Medium",sun:"Full Sun"},
-  {id:6,name:"Desert Cactus Set",cat:"outdoor",category:"Succulent · Low Care",desc:"Set of 3 sculptural cacti. Zero maintenance, maximum visual impact.",price:950,oldPrice:null,img:"https://images.unsplash.com/photo-1459156212016-c812468e2115?w=500&q=80",badge:"Low Care",care:"Easy",water:"Low",sun:"Full Sun"},
-  {id:7,name:"Snake Plant",cat:"indoor",category:"Indoor · Air Purifying",desc:"Nearly indestructible. Purifies air and thrives in neglect.",price:680,oldPrice:null,img:"https://images.unsplash.com/photo-1611734238918-26bef9e21a7e?w=500&q=80",badge:"Indoor",care:"Easy",water:"Low",sun:"Shade"},
-  {id:8,name:"Sunflower",cat:"outdoor",category:"Outdoor · Garden",desc:"Cheerful giant yellow blooms. Grows up to 6 feet tall.",price:350,oldPrice:null,img:"https://images.unsplash.com/photo-1470509037663-253afd7f0f51?w=500&q=80",badge:"Outdoor",care:"Easy",water:"Medium",sun:"Full Sun"},
-];
-
-const SUPPLIES = [
-  {id:1,name:"Wildflower Seed Mix",type:"Seeds · 50g Pack",price:320,img:"https://images.unsplash.com/photo-1416879595882-3373a0480b5b?w=400&q=80"},
-  {id:2,name:"Herb Garden Kit",type:"Seeds · 5 Varieties",price:580,img:"https://images.unsplash.com/photo-1466692476868-aef1dfb1e735?w=400&q=80"},
-  {id:3,name:"Climbing Rose Seeds",type:"Seeds · 20 seeds",price:450,img:"https://images.unsplash.com/photo-1508739773434-c26b3d09e071?w=400&q=80"},
-  {id:4,name:"Organic Compost",type:"Fertilizer · 2kg Bag",price:720,img:"https://images.unsplash.com/photo-1485955900006-10f4d324d411?w=400&q=80"},
-  {id:5,name:"Terracotta Pot Set",type:"Pots · Set of 4",price:1100,img:"https://images.unsplash.com/photo-1416879595882-3373a0480b5b?w=400&q=80"},
-  {id:6,name:"Premium Potting Mix",type:"Soil · 5kg Bag",price:890,img:"https://images.unsplash.com/photo-1459156212016-c812468e2115?w=400&q=80"},
-];
-
-// ======================================
-// CART STATE
-// ======================================
-let cart = JSON.parse(localStorage.getItem('gl_cart') || '[]');
-
-function saveCart(){ localStorage.setItem('gl_cart', JSON.stringify(cart)); updateCartBadge(); }
-
-function updateCartBadge(){
-  const total = cart.reduce((s,i)=>s+i.qty,0);
-  document.getElementById('cartCount').textContent = total;
-}
-
-function addToCart(id, type='plant'){
-  const item = type === 'plant'
-    ? PLANTS.find(p=>p.id===id)
-    : SUPPLIES.find(s=>s.id===id);
-  if (!item) return;
-  const existing = cart.find(c=>c.id===id && c.type===type);
-  if (existing) { existing.qty++; }
-  else { cart.push({id, type, name: item.name, price: item.price, img: item.img, qty:1}); }
-  saveCart();
-  showToast(`🌿 ${item.name} added to cart!`);
-}
-
-function removeFromCart(idx){ cart.splice(idx,1); saveCart(); renderCart(); }
-
-function changeQty(idx, delta){
-  cart[idx].qty += delta;
-  if (cart[idx].qty <= 0) removeFromCart(idx);
-  else { saveCart(); renderCart(); }
-}
-
-function renderCart(){
-  const el = document.getElementById('cartItems');
-  if (!cart.length) {
-    el.innerHTML = '<div class="cart-empty"><span>🌱</span>Your cart is empty.<br/>Add some beautiful plants!</div>';
-    document.getElementById('cartTotal').textContent = 'Rs. 0';
-    return;
-  }
-  el.innerHTML = cart.map((item,i) => `
-    <div class="citem">
-      <div class="citem-img"><img src="${item.img}" alt="${item.name}"></div>
-      <div class="citem-info">
-        <div class="citem-name">${item.name}</div>
-        <div class="citem-price">Rs. ${item.price.toLocaleString()}</div>
-        <div class="citem-qty">
-          <button class="qty-btn" onclick="changeQty(${i},-1)">−</button>
-          <span class="qty-n">${item.qty}</span>
-          <button class="qty-btn" onclick="changeQty(${i},1)">+</button>
-        </div>
-      </div>
-      <button class="citem-del" onclick="removeFromCart(${i})">🗑</button>
-    </div>
-  `).join('');
-  const total = cart.reduce((s,i)=>s+(i.price*i.qty),0);
-  document.getElementById('cartTotal').textContent = 'Rs. '+total.toLocaleString();
-}
-
-function toggleCart(){
-  document.getElementById('cartOverlay').classList.toggle('open');
-  document.getElementById('cartSidebar').classList.toggle('open');
-  renderCart();
-}
-
-function checkout(){
-  if (!cart.length){ showToast('Your cart is empty!','error'); return; }
-  showToast('✅ Order placed! Thank you for shopping with GreenLeaf 🌿');
-  cart=[];saveCart();renderCart();
-  setTimeout(toggleCart,1800);
-}
-
-// ======================================
-// RENDER PLANTS
-// ======================================
-function renderPlants(filter='all'){
-  const grid = document.getElementById('plantsGrid');
-  const list = filter==='all' ? PLANTS : PLANTS.filter(p=>p.cat===filter);
-  grid.innerHTML = list.map(p=>`
-    <div class="pcard" data-cat="${p.cat}">
-      <div class="pimg">
-        <img src="${p.img}" alt="${p.name}" loading="lazy">
-        <span class="pbadge ${p.badge==='sale'?'sale':p.badge==='trending'?'trending':''}">${p.badge==='sale'?'🏷 Sale':p.badge==='trending'?'🔥 Trending':p.badge}</span>
-        <button class="wish" onclick="wishToggle(this)">♡</button>
-      </div>
-      <div class="pbody">
-        <div class="pcat">${p.category}</div>
-        <div class="pname">${p.name}</div>
-        <div class="pinfo-row">
-          <span class="pinfo-tag">💧 ${p.water}</span>
-          <span class="pinfo-tag">☀️ ${p.sun}</span>
-          <span class="pinfo-tag">🌿 ${p.care}</span>
-        </div>
-        <div class="pdesc">${p.desc}</div>
-        <div class="pfoot">
-          <div class="pprice">Rs. ${p.price.toLocaleString()}${p.oldPrice?`<s>Rs. ${p.oldPrice.toLocaleString()}</s>`:''}</div>
-          <button class="add-btn" onclick="addToCart(${p.id},'plant')">+ Add</button>
-        </div>
-      </div>
-    </div>
-  `).join('');
-  observeCards();
-}
-
-function filterPlants(f){
-  renderPlants(f);
-  ['all','indoor','flower','outdoor'].forEach(k=>{
-    const btn = document.getElementById('f-'+k);
-    if(btn) btn.style.background = k===f ? 'var(--g3)' : 'var(--g1)';
-  });
-}
-
-function filterByCategory(name){
-  document.getElementById('plants').scrollIntoView({behavior:'smooth'});
-  const map = {'Indoor Plants':'indoor','Flowering Plants':'flower','Outdoor Garden':'outdoor','Succulents':'outdoor'};
-  filterPlants(map[name]||'all');
-}
-
-function renderSupplies(){
-  const grid = document.getElementById('suppliesGrid');
-  grid.innerHTML = SUPPLIES.map(s=>`
-    <div class="scard">
-      <div class="simg-wrap"><img src="${s.img}" alt="${s.name}" loading="lazy"></div>
-      <div class="sname">${s.name}</div>
-      <div class="stype">${s.type}</div>
-      <div class="sprice">Rs. ${s.price.toLocaleString()}</div>
-      <button class="s-add" onclick="addToCart(${s.id},'supply')">+ Add to Cart</button>
-    </div>
-  `).join('');
-}
-
-function wishToggle(btn){
-  btn.textContent = btn.textContent==='♡' ? '❤️' : '♡';
-}
-
-// ======================================
-// AUTH
-// ======================================
-function openAuth(){ document.getElementById('authModal').classList.add('open'); }
-function closeAuth(){ document.getElementById('authModal').classList.remove('open'); }
-function switchTab(t){
-  document.getElementById('loginForm').style.display = t==='login'?'block':'none';
-  document.getElementById('registerForm').style.display = t==='register'?'block':'none';
-  document.getElementById('tab-login').classList.toggle('active', t==='login');
-  document.getElementById('tab-register').classList.toggle('active', t==='register');
-}
-
-async function doLogin(){
-  const email = document.getElementById('loginEmail').value.trim();
-  const pass  = document.getElementById('loginPass').value;
-  const err   = document.getElementById('loginErr');
-  const ok    = document.getElementById('loginOk');
-  if (!email||!pass){ err.style.display='block'; err.textContent='Please enter email and password.'; return; }
-  err.style.display='none'; ok.style.display='none';
-
-  // In production: fetch('php/auth.php', {method:'POST', body: new URLSearchParams({action:'login',email,password:pass})})
-  // DEMO simulation:
-  setTimeout(()=>{
-    ok.style.display='block'; ok.textContent='✅ Login successful! Welcome back.';
-    document.getElementById('authBtn').textContent = '👤 My Account';
-    setTimeout(closeAuth, 1200);
-    showToast('Welcome back! 🌿');
-  }, 600);
-}
-
-async function doRegister(){
-  const name  = document.getElementById('regName').value.trim();
-  const email = document.getElementById('regEmail').value.trim();
-  const pass  = document.getElementById('regPass').value;
-  const err   = document.getElementById('regErr');
-  const ok    = document.getElementById('regOk');
-  if (!name||!email||!pass){ err.style.display='block'; err.textContent='Please fill all required fields.'; return; }
-  if (pass.length<6){ err.style.display='block'; err.textContent='Password must be at least 6 characters.'; return; }
-  err.style.display='none'; ok.style.display='none';
-
-  // In production: fetch('php/auth.php', {method:'POST', body: ...})
-  setTimeout(()=>{
-    ok.style.display='block'; ok.textContent='✅ Account created! Please login.';
-    setTimeout(()=>switchTab('login'), 1400);
-  }, 700);
-}
-
-// ======================================
-// BOOKING FORM
-// ======================================
-function submitBooking(e){
-  e.preventDefault();
-  showToast('📅 Booking confirmed! We\'ll contact you within 24 hours. 🌿');
-  e.target.reset();
-}
-
-// ======================================
-// TOAST
-// ======================================
-function showToast(msg, type=''){
-  const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.className = 'toast show' + (type?' '+type:'');
-  clearTimeout(window._toastTimer);
-  window._toastTimer = setTimeout(()=>{ t.classList.remove('show'); }, 3000);
-}
-
-// ======================================
-// SCROLL ANIMATIONS
-// ======================================
-function observeCards(){
-  const obs = new IntersectionObserver((entries)=>{
-    entries.forEach(e=>{
-      if(e.isIntersecting){ e.target.style.opacity='1'; e.target.style.transform='translateY(0)'; }
-    });
-  },{threshold:0.1});
-  document.querySelectorAll('.pcard,.scard,.tcard,.exp-card,.cat-card').forEach(el=>{
-    el.style.opacity='0'; el.style.transform='translateY(24px)';
-    el.style.transition='opacity .5s ease,transform .5s ease';
-    obs.observe(el);
-  });
-}
-
-// ======================================
-// CLOSE MODAL ON OVERLAY CLICK
-// ======================================
-this) closeAuth();
-});
-
-document.getElementById('adminModal').addEventListener('click', function(e){
-  if(e.target===this) closeAdminModal();
-});
-
-// ====== ADMIN MODAL ======
-function openAdminModal(){
-  document.getElementById('adminModal').classList.add('open');
-}
-function closeAdminModal(){
-  document.getElementById('adminModal').classList.remove('open');
-}
-function doAdminLogin(){
-  const email = document.getElementById('adminEmailInput').value.trim();
-  const pass  = document.getElementById('adminPassInput').value;
-  const err   = document.getElementById('adminLoginErr');
-  if(email==='rania@greenleaf.pk' && pass==='admin123'){
-    err.style.display='none';
-    closeAdminModal();
-    document.getElementById('adminPanelWrap').style.display='block';
-    document.body.style.overflow='hidden';
-    admInit();
-  } else {
-    err.style.display='block';
-    err.textContent='Invalid credentials. Use: rania@greenleaf.pk / admin123';
-    setTimeout(()=>err.style.display='none',3000);
-  }
-}
-document.addEventListener('keydown',function(e){
-  if(e.key==='Enter' && document.getElementById('adminModal').classList.contains('open')) doAdminLogin();
-});
-function admLogout(){
-  document.getElementById('adminPanelWrap').style.display='none';
-  document.body.style.overflow='';
-}
-
-// ====== ADMIN DATA ======
-let ADM_PLANTS = JSON.parse(localStorage.getItem('gl_adm_plants')||'null') || [
+let PLANTS = JSON.parse(localStorage.getItem('admin_plants') || 'null') || [
   {id:1,name:"Peace Lily",cat:"Indoor Plants",desc:"Elegant white blooms, air purifying.",price:850,oldPrice:1100,stock:45,img:"https://images.unsplash.com/photo-1487530811176-3780de880c2d?w=300&q=80",care:"Easy",water:"Medium",sun:"Shade",featured:true},
   {id:2,name:"Red Rose Bush",cat:"Flowering Plants",desc:"Classic fragrant garden roses.",price:1200,oldPrice:1600,stock:30,img:"https://images.unsplash.com/photo-1455659817273-f96807779a8a?w=300&q=80",care:"Medium",water:"High",sun:"Full Sun",featured:true},
   {id:3,name:"Monstera Deliciosa",cat:"Indoor Plants",desc:"Iconic tropical split-leaf plant.",price:2500,oldPrice:null,stock:20,img:"https://images.unsplash.com/photo-1502977249166-824b3a8a4d6d?w=300&q=80",care:"Easy",water:"Medium",sun:"Partial",featured:true},
@@ -1285,14 +466,16 @@ let ADM_PLANTS = JSON.parse(localStorage.getItem('gl_adm_plants')||'null') || [
   {id:7,name:"Snake Plant",cat:"Indoor Plants",desc:"Nearly indestructible air purifier.",price:680,oldPrice:null,stock:80,img:"https://images.unsplash.com/photo-1611734238918-26bef9e21a7e?w=300&q=80",care:"Easy",water:"Low",sun:"Shade",featured:false},
   {id:8,name:"Sunflower",cat:"Outdoor Garden",desc:"Cheerful giant yellow blooms.",price:350,oldPrice:null,stock:150,img:"https://images.unsplash.com/photo-1470509037663-253afd7f0f51?w=300&q=80",care:"Easy",water:"Medium",sun:"Full Sun",featured:false},
 ];
-let ADM_SUPPLIES = JSON.parse(localStorage.getItem('gl_adm_supplies')||'null') || [
+
+let SUPPLIES = JSON.parse(localStorage.getItem('admin_supplies') || 'null') || [
   {id:1,name:"Wildflower Seed Mix",type:"Seeds",price:320,stock:200,img:"https://images.unsplash.com/photo-1416879595882-3373a0480b5b?w=300&q=80"},
   {id:2,name:"Herb Garden Kit",type:"Seeds",price:580,stock:120,img:"https://images.unsplash.com/photo-1466692476868-aef1dfb1e735?w=300&q=80"},
   {id:3,name:"Organic Compost",type:"Fertilizer",price:720,stock:90,img:"https://images.unsplash.com/photo-1485955900006-10f4d324d411?w=300&q=80"},
   {id:4,name:"Terracotta Pot Set",type:"Pots",price:1100,stock:55,img:"https://images.unsplash.com/photo-1416879595882-3373a0480b5b?w=300&q=80"},
   {id:5,name:"Premium Potting Mix",type:"Soil",price:890,stock:70,img:"https://images.unsplash.com/photo-1459156212016-c812468e2115?w=300&q=80"},
 ];
-let ADM_ORDERS = JSON.parse(localStorage.getItem('gl_adm_orders')||'null') || [
+
+let ORDERS = JSON.parse(localStorage.getItem('admin_orders') || 'null') || [
   {id:1001,customer:"Ayesha Tariq",email:"ayesha@email.com",items:3,total:3430,payment:"Cash on Delivery",status:"Delivered",date:"2025-03-10"},
   {id:1002,customer:"Usman Riaz",email:"usman@email.com",items:1,total:2500,payment:"Bank Transfer",status:"Shipped",date:"2025-03-12"},
   {id:1003,customer:"Sana Mirza",email:"sana@email.com",items:5,total:4890,payment:"Cash on Delivery",status:"Confirmed",date:"2025-03-14"},
@@ -1300,271 +483,394 @@ let ADM_ORDERS = JSON.parse(localStorage.getItem('gl_adm_orders')||'null') || [
   {id:1005,customer:"Fatima Khan",email:"fatima@email.com",items:4,total:5700,payment:"Bank Transfer",status:"Pending",date:"2025-03-15"},
   {id:1006,customer:"Bilal Ahmed",email:"bilal@email.com",items:2,total:2050,payment:"Cash on Delivery",status:"Cancelled",date:"2025-03-08"},
 ];
-let ADM_CONSULTS = JSON.parse(localStorage.getItem('gl_adm_consults')||'null') || [
-  {id:1,customer:"Ayesha Tariq",expert:"Rania",type:"Plant Selection",date:"2025-03-18",time:"10:00 AM",status:"Confirmed"},
+
+let CONSULTS = JSON.parse(localStorage.getItem('admin_consults') || 'null') || [
+  {id:1,customer:"Ayesha Tariq",expert:"Rania Al-Farooq",type:"Plant Selection & Advice",date:"2025-03-18",time:"10:00 AM",status:"Confirmed"},
   {id:2,customer:"Usman Riaz",expert:"Dr. Hamid Shah",type:"Plant Health Diagnosis",date:"2025-03-19",time:"2:00 PM",status:"Pending"},
   {id:3,customer:"Sana Mirza",expert:"Sara Malik",type:"Indoor Plant Setup",date:"2025-03-20",time:"11:00 AM",status:"Pending"},
   {id:4,customer:"Ahmed Malik",expert:"Ahmed Khan",type:"Garden Layout Planning",date:"2025-03-17",time:"3:00 PM",status:"Completed"},
-  {id:5,customer:"Fatima Khan",expert:"Rania",type:"General Care",date:"2025-03-21",time:"12:00 PM",status:"Pending"},
+  {id:5,customer:"Fatima Khan",expert:"Rania Al-Farooq",type:"General Care Consultation",date:"2025-03-21",time:"12:00 PM",status:"Pending"},
 ];
-let ADM_EXPERTS = [
-  {id:1,name:"Rania",spec:"Lead Horticulturist",email:"rania@greenleaf.pk",phone:"+92-300-1234567",rating:5.0,img:"https://images.unsplash.com/photo-1594744803329-e58b31de8bf5?w=300&q=80"},
-  {id:2,name:"Dr. Hamid Shah",spec:"Plant Pathologist",email:"hamid@greenleaf.pk",phone:"+92-321-9876543",rating:5.0,img:"https://images.unsplash.com/photo-1537368910025-700350fe46c7?w=300&q=80"},
-  {id:3,name:"Sara Malik",spec:"Indoor Plant Specialist",email:"sara@greenleaf.pk",phone:"+92-333-5556667",rating:4.5,img:"https://images.unsplash.com/photo-1580489944761-15a19d654956?w=300&q=80"},
-  {id:4,name:"Ahmed Khan",spec:"Landscape Designer",email:"ahmed@greenleaf.pk",phone:"+92-345-1112223",rating:5.0,img:"https://images.unsplash.com/photo-1560250097-0b93528c311a?w=300&q=80"},
+
+let EXPERTS = [
+  {id:1,name:"Rania Al-Farooq",spec:"Lead Horticulturist",email:"rania@greenleaf.pk",phone:"+92-300-1234567",rating:5.0,avail:true,img:"https://images.unsplash.com/photo-1594744803329-e58b31de8bf5?w=300&q=80"},
+  {id:2,name:"Dr. Hamid Shah",spec:"Plant Pathologist",email:"hamid@greenleaf.pk",phone:"+92-321-9876543",rating:5.0,avail:true,img:"https://images.unsplash.com/photo-1537368910025-700350fe46c7?w=300&q=80"},
+  {id:3,name:"Sara Malik",spec:"Indoor Plant Specialist",email:"sara@greenleaf.pk",phone:"+92-333-5556667",rating:4.5,avail:true,img:"https://images.unsplash.com/photo-1580489944761-15a19d654956?w=300&q=80"},
+  {id:4,name:"Ahmed Khan",spec:"Landscape Designer",email:"ahmed@greenleaf.pk",phone:"+92-345-1112223",rating:5.0,avail:true,img:"https://images.unsplash.com/photo-1560250097-0b93528c311a?w=300&q=80"},
 ];
-let ADM_CUSTOMERS = [
-  {id:1,name:"Ayesha Tariq",email:"ayesha@email.com",city:"Lahore",orders:3,joined:"2025-01-15"},
-  {id:2,name:"Usman Riaz",email:"usman@email.com",city:"Islamabad",orders:1,joined:"2025-02-08"},
-  {id:3,name:"Sana Mirza",email:"sana@email.com",city:"Karachi",orders:5,joined:"2025-01-22"},
-  {id:4,name:"Ahmed Malik",email:"ahmed@email.com",city:"Lahore",orders:2,joined:"2025-03-01"},
-  {id:5,name:"Fatima Khan",email:"fatima@email.com",city:"Islamabad",orders:4,joined:"2025-02-14"},
-  {id:6,name:"Bilal Ahmed",email:"bilal@email.com",city:"Rawalpindi",orders:2,joined:"2025-01-30"},
+
+let CUSTOMERS = [
+  {id:1,name:"Ayesha Tariq",email:"ayesha@email.com",phone:"+92-311-1234567",city:"Lahore",orders:3,joined:"2025-01-15"},
+  {id:2,name:"Usman Riaz",email:"usman@email.com",phone:"+92-332-9876543",city:"Islamabad",orders:1,joined:"2025-02-08"},
+  {id:3,name:"Sana Mirza",email:"sana@email.com",phone:"+92-321-5556667",city:"Karachi",orders:5,joined:"2025-01-22"},
+  {id:4,name:"Ahmed Malik",email:"ahmed@email.com",phone:"+92-345-1112223",city:"Lahore",orders:2,joined:"2025-03-01"},
+  {id:5,name:"Fatima Khan",email:"fatima@email.com",phone:"+92-300-4445556",city:"Islamabad",orders:4,joined:"2025-02-14"},
+  {id:6,name:"Bilal Ahmed",email:"bilal@email.com",phone:"+92-333-7778889",city:"Rawalpindi",orders:2,joined:"2025-01-30"},
 ];
-function admSaveData(){
-  localStorage.setItem('gl_adm_plants',JSON.stringify(ADM_PLANTS));
-  localStorage.setItem('gl_adm_supplies',JSON.stringify(ADM_SUPPLIES));
-  localStorage.setItem('gl_adm_orders',JSON.stringify(ADM_ORDERS));
-  localStorage.setItem('gl_adm_consults',JSON.stringify(ADM_CONSULTS));
+
+function saveData(){
+  localStorage.setItem('admin_plants',JSON.stringify(PLANTS));
+  localStorage.setItem('admin_supplies',JSON.stringify(SUPPLIES));
+  localStorage.setItem('admin_orders',JSON.stringify(ORDERS));
+  localStorage.setItem('admin_consults',JSON.stringify(CONSULTS));
 }
 
-// ====== ADMIN NAV ======
-function admShowPage(name,btn){
-  document.querySelectorAll('.adm-page').forEach(p=>p.classList.remove('active'));
-  document.querySelectorAll('.adm-link').forEach(l=>l.classList.remove('active'));
-  document.getElementById('adm-page-'+name).classList.add('active');
-  if(btn) btn.classList.add('active');
-  const titles={dashboard:'Dashboard',plants:'Plant Management',supplies:'Seeds & Supplies',orders:'Orders',consultations:'Consultations',experts:'Experts',customers:'Customers'};
-  document.getElementById('admPageTitle').textContent=titles[name]||name;
-  if(name==='plants') admRenderPlants();
-  if(name==='supplies') admRenderSupplies();
-  if(name==='orders') admRenderOrders();
-  if(name==='consultations') admRenderConsults();
-  if(name==='experts') admRenderExperts();
-  if(name==='customers') admRenderCustomers();
+// ======================================
+// LOGIN
+// ======================================
+function adminLogin(){
+  const email = document.getElementById('adminEmail').value.trim();
+  const pass  = document.getElementById('adminPass').value;
+  const err   = document.getElementById('loginErr');
+  if (email === 'rania@greenleaf.pk' && pass === 'admin123') {
+    document.getElementById('loginScreen').style.display='none';
+    document.getElementById('adminLayout').style.display='block';
+    initAdmin();
+  } else {
+    err.style.display='block';
+    setTimeout(()=>err.style.display='none', 3000);
+  }
+}
+function adminLogout(){
+  document.getElementById('loginScreen').style.display='flex';
+  document.getElementById('adminLayout').style.display='none';
 }
 
-// ====== ADMIN INIT ======
-function admInit(){
-  admRenderDashboard();
-  document.getElementById('admBadgePlants').textContent=ADM_PLANTS.length;
-  document.getElementById('admBadgeOrders').textContent=ADM_ORDERS.filter(o=>o.status==='Pending').length;
-  document.getElementById('admBadgeConsult').textContent=ADM_CONSULTS.filter(c=>c.status==='Pending').length;
+// ======================================
+// NAVIGATION
+// ======================================
+function showPage(name){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.sb-link').forEach(l=>l.classList.remove('active'));
+  document.getElementById('page-'+name).classList.add('active');
+  event.currentTarget.classList.add('active');
+  const titles={dashboard:'Dashboard',plants:'Plant Management',supplies:'Seeds & Supplies',orders:'Order Management',consultations:'Consultations',experts:'Gardening Experts',customers:'Customers'};
+  document.getElementById('pageTitle').textContent = titles[name]||name;
+  if(name==='plants') renderPlantsTable();
+  if(name==='supplies') renderSuppliesTable();
+  if(name==='orders') renderOrdersTable();
+  if(name==='consultations') renderConsultTable();
+  if(name==='experts') renderExpertsGrid();
+  if(name==='customers') renderCustomersTable();
 }
 
-// ====== DASHBOARD ======
-function admRenderDashboard(){
-  const rev=ADM_ORDERS.filter(o=>o.status==='Delivered').reduce((s,o)=>s+o.total,0);
-  document.getElementById('adm-s-plants').textContent=ADM_PLANTS.length;
-  document.getElementById('adm-s-rev').textContent='Rs.'+Math.round(rev/1000)+'K';
-  document.getElementById('adm-s-orders').textContent=ADM_ORDERS.length;
-  document.getElementById('adm-s-cust').textContent=ADM_CUSTOMERS.length;
-  document.getElementById('adm-s-consult').textContent=ADM_CONSULTS.filter(c=>c.status==='Pending').length;
-  document.getElementById('adm-s-pending').textContent=ADM_ORDERS.filter(o=>o.status==='Pending').length;
-  document.getElementById('adm-recent-orders').innerHTML=ADM_ORDERS.slice(0,5).map(o=>`
+// ======================================
+// INIT
+// ======================================
+function initAdmin(){
+  const now = new Date();
+  document.getElementById('topDate').textContent = now.toDateString();
+  renderDashboard();
+}
+
+// ======================================
+// DASHBOARD
+// ======================================
+function renderDashboard(){
+  const revenue = ORDERS.filter(o=>o.status==='Delivered').reduce((s,o)=>s+o.total,0);
+  document.getElementById('stat-plants').textContent = PLANTS.length;
+  document.getElementById('stat-revenue').textContent = 'Rs.'+Math.round(revenue/1000)+'K';
+  document.getElementById('stat-orders').textContent = ORDERS.length;
+  document.getElementById('stat-customers').textContent = CUSTOMERS.length;
+  document.getElementById('stat-consult').textContent = CONSULTS.filter(c=>c.status==='Pending').length;
+  document.getElementById('stat-pending').textContent = ORDERS.filter(o=>o.status==='Pending').length;
+
+  // Recent orders
+  const tbody = document.getElementById('recentOrdersBody');
+  tbody.innerHTML = ORDERS.slice(0,5).map(o=>`
     <tr>
-      <td><strong>#${o.id}</strong></td>
+      <td>#${o.id}</td>
       <td>${o.customer}</td>
-      <td style="font-weight:600;color:#2d6a4f">Rs.${o.total.toLocaleString()}</td>
-      <td><span class="adm-sb ${o.status.toLowerCase()}">${o.status}</span></td>
+      <td style="font-weight:600;color:var(--g3)">Rs.${o.total.toLocaleString()}</td>
+      <td><span class="status-badge sb-${o.status.toLowerCase()}">${o.status}</span></td>
       <td>${o.date}</td>
-    </tr>`).join('');
-  document.getElementById('adm-quick-stats').innerHTML=[
-    {ic:'🌿',bg:'#e8f8f0',n:'Low Stock Plants',s:'Below 25 units',v:ADM_PLANTS.filter(p=>p.stock<25).length},
-    {ic:'📅',bg:'#fff8e0',n:'Upcoming Sessions',s:'Not cancelled',v:ADM_CONSULTS.filter(c=>c.status!=='Cancelled').length},
+    </tr>
+  `).join('');
+
+  // Quick stats
+  document.getElementById('quickStats').innerHTML = [
+    {ic:'🌿',bg:'#e8f8f0',n:'Low Stock Plants',s:'Below 25 units',v: PLANTS.filter(p=>p.stock<25).length},
+    {ic:'📅',bg:'#fff8e0',n:'Upcoming Sessions',s:'Next 7 days',v: CONSULTS.filter(c=>c.status!=='Cancelled').length},
     {ic:'⭐',bg:'#fffbe8',n:'Avg Expert Rating',s:'All consultants',v:'5.0★'},
-    {ic:'💧',bg:'#e8f0ff',n:'Featured Plants',s:'On homepage',v:ADM_PLANTS.filter(p=>p.featured).length},
-  ].map(q=>`<div class="quick-item"><div class="q-ic" style="background:${q.bg}">${q.ic}</div><div><div class="q-n">${q.n}</div><div class="q-s">${q.s}</div></div><div class="q-v">${q.v}</div></div>`).join('');
+    {ic:'💧',bg:'#e8f0ff',n:'Featured Plants',s:'On homepage',v: PLANTS.filter(p=>p.featured).length},
+  ].map(q=>`
+    <div class="quick-item">
+      <div class="quick-ic" style="background:${q.bg}">${q.ic}</div>
+      <div><div class="quick-n">${q.n}</div><div class="quick-s">${q.s}</div></div>
+      <div class="quick-v">${q.v}</div>
+    </div>
+  `).join('');
 }
 
-// ====== PLANTS ======
-function admRenderPlants(data){
-  const list=data||ADM_PLANTS;
-  document.getElementById('adm-plants-body').innerHTML=list.map(p=>`
+// ======================================
+// PLANTS TABLE
+// ======================================
+function renderPlantsTable(data){
+  const list = data || PLANTS;
+  document.getElementById('plantsBody').innerHTML = list.map(p=>`
     <tr>
       <td><img src="${p.img}" alt="${p.name}"></td>
       <td style="font-weight:600">${p.name}</td>
       <td>${p.cat}</td>
-      <td style="color:#2d6a4f;font-weight:600">Rs.${p.price.toLocaleString()}</td>
-      <td style="color:${p.stock<20?'#c07050':'inherit'};font-weight:${p.stock<20?700:400}">${p.stock}</td>
-      <td>${p.featured?'<span style="color:#c9a84c;font-weight:600">★ Yes</span>':'No'}</td>
-      <td style="display:flex;gap:6px;padding:10px">
-        <button class="adm-act-btn adm-edit" onclick="admEditPlant(${p.id})">✏️ Edit</button>
-        <button class="adm-act-btn adm-del" onclick="admDeletePlant(${p.id})">🗑</button>
+      <td style="color:var(--g3);font-weight:600">Rs.${p.price.toLocaleString()}</td>
+      <td><span style="color:${p.stock<20?'var(--terra)':'inherit'};font-weight:${p.stock<20?'700':'400'}">${p.stock}</span></td>
+      <td>${p.care}</td>
+      <td>${p.featured?'<span style="color:var(--gold);font-weight:600">⭐ Yes</span>':'No'}</td>
+      <td style="display:flex;gap:6px;padding:10px 12px">
+        <button class="act-btn act-edit" onclick="editPlant(${p.id})">✏️ Edit</button>
+        <button class="act-btn act-del" onclick="deletePlant(${p.id})">🗑 Del</button>
       </td>
-    </tr>`).join('');
-}
-function admFilterPlants(){
-  const q=document.getElementById('adm-plant-search').value.toLowerCase();
-  admRenderPlants(ADM_PLANTS.filter(p=>p.name.toLowerCase().includes(q)||p.cat.toLowerCase().includes(q)));
-}
-function admOpenPlantModal(reset=true){
-  if(reset){
-    document.getElementById('admPlantModalTitle').textContent='Add New Plant';
-    document.getElementById('admEditPlantId').value='';
-    ['admPName','admPPrice','admPOldPrice','admPDesc','admPImg'].forEach(id=>document.getElementById(id).value='');
-    document.getElementById('admPStock').value=50;
-    document.getElementById('admPFeatured').checked=false;
-    document.getElementById('admImgPrev').innerHTML='🌿 Enter URL to preview';
-  }
-  document.getElementById('admPlantModal').classList.add('open');
-}
-function admClosePlantModal(){ document.getElementById('admPlantModal').classList.remove('open'); }
-function admPreviewImg(){
-  const url=document.getElementById('admPImg').value.trim();
-  const prev=document.getElementById('admImgPrev');
-  prev.innerHTML=url?`<img src="${url}" alt="preview" onerror="this.parentElement.innerHTML='Invalid URL'">`:'🌿 Enter URL to preview';
-}
-function admEditPlant(id){
-  const p=ADM_PLANTS.find(x=>x.id===id); if(!p) return;
-  document.getElementById('admPlantModalTitle').textContent='Edit Plant';
-  document.getElementById('admEditPlantId').value=id;
-  document.getElementById('admPName').value=p.name;
-  document.getElementById('admPCat').value=p.cat;
-  document.getElementById('admPPrice').value=p.price;
-  document.getElementById('admPOldPrice').value=p.oldPrice||'';
-  document.getElementById('admPStock').value=p.stock;
-  document.getElementById('admPCare').value=p.care;
-  document.getElementById('admPWater').value=p.water;
-  document.getElementById('admPSun').value=p.sun;
-  document.getElementById('admPDesc').value=p.desc;
-  document.getElementById('admPImg').value=p.img;
-  document.getElementById('admPFeatured').checked=p.featured;
-  admPreviewImg();
-  admOpenPlantModal(false);
-}
-function admSavePlant(){
-  const name=document.getElementById('admPName').value.trim();
-  const price=parseFloat(document.getElementById('admPPrice').value)||0;
-  if(!name||!price){ showToast('Fill required fields',''); return; }
-  const data={name,cat:document.getElementById('admPCat').value,price,oldPrice:parseFloat(document.getElementById('admPOldPrice').value)||null,stock:parseInt(document.getElementById('admPStock').value)||0,care:document.getElementById('admPCare').value,water:document.getElementById('admPWater').value,sun:document.getElementById('admPSun').value,desc:document.getElementById('admPDesc').value,img:document.getElementById('admPImg').value.trim()||'https://images.unsplash.com/photo-1416879595882-3373a0480b5b?w=300',featured:document.getElementById('admPFeatured').checked};
-  const eid=document.getElementById('admEditPlantId').value;
-  if(eid){ const idx=ADM_PLANTS.findIndex(p=>p.id===parseInt(eid)); ADM_PLANTS[idx]={...ADM_PLANTS[idx],...data}; showToast('Plant updated!'); }
-  else { data.id=Date.now(); ADM_PLANTS.push(data); showToast('Plant added!'); }
-  admSaveData(); admClosePlantModal(); admRenderPlants(); admRenderDashboard();
-  document.getElementById('admBadgePlants').textContent=ADM_PLANTS.length;
-}
-function admDeletePlant(id){
-  if(!confirm('Delete this plant?')) return;
-  ADM_PLANTS=ADM_PLANTS.filter(p=>p.id!==id);
-  admSaveData(); admRenderPlants(); admRenderDashboard();
-  document.getElementById('admBadgePlants').textContent=ADM_PLANTS.length;
-  showToast('Plant deleted.');
+    </tr>
+  `).join('');
+  document.getElementById('badgePlants').textContent = PLANTS.length;
 }
 
-// ====== SUPPLIES ======
-function admRenderSupplies(){
-  document.getElementById('adm-supplies-body').innerHTML=ADM_SUPPLIES.map(s=>`
+function filterPlantsTable(){
+  const q = document.getElementById('plantSearch').value.toLowerCase();
+  renderPlantsTable(PLANTS.filter(p=>p.name.toLowerCase().includes(q)||p.cat.toLowerCase().includes(q)));
+}
+
+// ======================================
+// PLANT MODAL
+// ======================================
+function openPlantModal(reset=true){
+  if(reset){
+    document.getElementById('plantModalTitle').textContent='Add New Plant';
+    document.getElementById('editPlantId').value='';
+    document.getElementById('pName').value='';
+    document.getElementById('pPrice').value='';
+    document.getElementById('pOldPrice').value='';
+    document.getElementById('pStock').value='';
+    document.getElementById('pDesc').value='';
+    document.getElementById('pImgUrl').value='';
+    document.getElementById('pImgPreview').innerHTML='<div class="img-placeholder">🌿<br>Enter URL above to preview</div>';
+    document.getElementById('pFeatured').checked=false;
+  }
+  document.getElementById('plantModal').classList.add('open');
+}
+function closePlantModal(){ document.getElementById('plantModal').classList.remove('open'); }
+
+function previewPlantImg(){
+  const url = document.getElementById('pImgUrl').value.trim();
+  const prev = document.getElementById('pImgPreview');
+  if(url){ prev.innerHTML=`<img src="${url}" alt="preview" onerror="this.parentElement.innerHTML='<div class=\\'img-placeholder\\'>⚠️ Invalid URL</div>'">`;  }
+  else { prev.innerHTML='<div class="img-placeholder">🌿<br>Enter URL above to preview</div>'; }
+}
+
+function editPlant(id){
+  const p = PLANTS.find(x=>x.id===id); if(!p) return;
+  document.getElementById('plantModalTitle').textContent='Edit Plant';
+  document.getElementById('editPlantId').value=id;
+  document.getElementById('pName').value=p.name;
+  document.getElementById('pCat').value=p.cat;
+  document.getElementById('pPrice').value=p.price;
+  document.getElementById('pOldPrice').value=p.oldPrice||'';
+  document.getElementById('pStock').value=p.stock;
+  document.getElementById('pCare').value=p.care;
+  document.getElementById('pWater').value=p.water;
+  document.getElementById('pSun').value=p.sun;
+  document.getElementById('pDesc').value=p.desc;
+  document.getElementById('pImgUrl').value=p.img;
+  document.getElementById('pFeatured').checked=p.featured;
+  previewPlantImg();
+  openPlantModal(false);
+}
+
+function savePlant(){
+  const name  = document.getElementById('pName').value.trim();
+  const price = parseFloat(document.getElementById('pPrice').value)||0;
+  if(!name||!price){ showAToast('Please fill required fields.','error'); return; }
+
+  const data = {
+    name, cat:document.getElementById('pCat').value,
+    price, oldPrice: parseFloat(document.getElementById('pOldPrice').value)||null,
+    stock: parseInt(document.getElementById('pStock').value)||0,
+    care: document.getElementById('pCare').value,
+    water: document.getElementById('pWater').value,
+    sun: document.getElementById('pSun').value,
+    desc: document.getElementById('pDesc').value,
+    img: document.getElementById('pImgUrl').value.trim() || 'https://images.unsplash.com/photo-1416879595882-3373a0480b5b?w=300',
+    featured: document.getElementById('pFeatured').checked,
+  };
+
+  const editId = document.getElementById('editPlantId').value;
+  if(editId){
+    const idx = PLANTS.findIndex(p=>p.id===parseInt(editId));
+    PLANTS[idx] = {...PLANTS[idx], ...data};
+    showAToast('✅ Plant updated successfully!');
+  } else {
+    data.id = Date.now();
+    PLANTS.push(data);
+    showAToast('✅ Plant added successfully!');
+  }
+  saveData(); closePlantModal(); renderPlantsTable(); renderDashboard();
+}
+
+function deletePlant(id){
+  if(!confirm('Delete this plant?')) return;
+  PLANTS = PLANTS.filter(p=>p.id!==id);
+  saveData(); renderPlantsTable(); renderDashboard();
+  showAToast('Plant deleted.','error');
+}
+
+// ======================================
+// SUPPLIES TABLE
+// ======================================
+function renderSuppliesTable(){
+  document.getElementById('suppliesBody').innerHTML = SUPPLIES.map(s=>`
     <tr>
       <td><img src="${s.img}" alt="${s.name}"></td>
       <td style="font-weight:600">${s.name}</td>
       <td>${s.type}</td>
-      <td style="color:#2d6a4f;font-weight:600">Rs.${s.price.toLocaleString()}</td>
+      <td style="color:var(--g3);font-weight:600">Rs.${s.price.toLocaleString()}</td>
       <td>${s.stock}</td>
-      <td><button class="adm-act-btn adm-del" onclick="admDeleteSupply(${s.id})">🗑</button></td>
-    </tr>`).join('');
+      <td style="display:flex;gap:6px;padding:10px 12px">
+        <button class="act-btn act-edit">✏️ Edit</button>
+        <button class="act-btn act-del" onclick="deleteSupply(${s.id})">🗑 Del</button>
+      </td>
+    </tr>
+  `).join('');
 }
-function admOpenSupplyModal(){ document.getElementById('admSupplyModal').classList.add('open'); }
-function admCloseSupplyModal(){ document.getElementById('admSupplyModal').classList.remove('open'); }
-function admSaveSupply(){
-  const name=document.getElementById('admSName').value.trim();
-  if(!name){ showToast('Name required'); return; }
-  ADM_SUPPLIES.push({id:Date.now(),name,type:document.getElementById('admSType').value,price:parseFloat(document.getElementById('admSPrice').value)||0,stock:parseInt(document.getElementById('admSStock').value)||0,img:document.getElementById('admSImg').value||'https://images.unsplash.com/photo-1416879595882-3373a0480b5b?w=300'});
-  admSaveData(); admCloseSupplyModal(); admRenderSupplies(); showToast('Supply added!');
+function openSupplyModal(){ document.getElementById('supplyModal').classList.add('open'); }
+function closeSupplyModal(){ document.getElementById('supplyModal').classList.remove('open'); }
+function saveSupply(){
+  const name = document.getElementById('sName').value.trim();
+  if(!name){ showAToast('Supply name required','error'); return; }
+  SUPPLIES.push({id:Date.now(),name,type:document.getElementById('sType').value,price:parseFloat(document.getElementById('sPrice').value)||0,stock:parseInt(document.getElementById('sStock').value)||0,img:document.getElementById('sImgUrl').value||'https://images.unsplash.com/photo-1416879595882-3373a0480b5b?w=300'});
+  saveData(); closeSupplyModal(); renderSuppliesTable();
+  showAToast('✅ Supply added!');
 }
-function admDeleteSupply(id){ ADM_SUPPLIES=ADM_SUPPLIES.filter(s=>s.id!==id); admSaveData(); admRenderSupplies(); showToast('Supply deleted.'); }
+function deleteSupply(id){ SUPPLIES=SUPPLIES.filter(s=>s.id!==id); saveData(); renderSuppliesTable(); showAToast('Supply deleted.','error'); }
 
-// ====== ORDERS ======
-function admRenderOrders(){
-  const f=document.getElementById('adm-order-filter').value;
-  const list=f==='all'?ADM_ORDERS:ADM_ORDERS.filter(o=>o.status===f);
-  document.getElementById('adm-orders-body').innerHTML=list.map(o=>`
+// ======================================
+// ORDERS TABLE
+// ======================================
+let ordersFilter = 'all';
+function renderOrdersTable(){
+  const list = ordersFilter==='all' ? ORDERS : ORDERS.filter(o=>o.status===ordersFilter);
+  document.getElementById('ordersBody').innerHTML = list.map(o=>`
     <tr>
-      <td style="font-weight:700;color:#2d6a4f">#${o.id}</td>
-      <td><div style="font-weight:500">${o.customer}</div><div style="font-size:.73rem;color:#6b8070">${o.email}</div></td>
+      <td style="font-weight:700;color:var(--g3)">#${o.id}</td>
+      <td><div style="font-weight:500">${o.customer}</div><div style="font-size:.75rem;color:var(--txt3)">${o.email}</div></td>
       <td>${o.items} item${o.items>1?'s':''}</td>
       <td style="font-weight:600">Rs.${o.total.toLocaleString()}</td>
-      <td style="font-size:.78rem">${o.payment}</td>
-      <td><select onchange="admUpdateOrderStatus(${o.id},this.value)" style="border:1px solid #e0ead8;border-radius:6px;padding:4px 8px;font-family:'Jost',sans-serif;font-size:.78rem;outline:none">${['Pending','Confirmed','Shipped','Delivered','Cancelled'].map(s=>`<option${s===o.status?' selected':''}>${s}</option>`).join('')}</select></td>
-      <td style="font-size:.8rem">${o.date}</td>
-    </tr>`).join('');
-  document.getElementById('admBadgeOrders').textContent=ADM_ORDERS.filter(o=>o.status==='Pending').length;
+      <td><span style="font-size:.78rem">${o.payment}</span></td>
+      <td>
+        <select onchange="updateOrderStatus(${o.id},this.value)" style="border:1px solid var(--border);border-radius:6px;padding:4px 8px;font-family:'Jost',sans-serif;font-size:.78rem;outline:none">
+          ${['Pending','Confirmed','Shipped','Delivered','Cancelled'].map(s=>`<option${s===o.status?' selected':''}>${s}</option>`).join('')}
+        </select>
+      </td>
+      <td style="font-size:.82rem">${o.date}</td>
+      <td><button class="act-btn act-view" onclick="viewOrder(${o.id})">👁 View</button></td>
+    </tr>
+  `).join('');
+  document.getElementById('badgeOrders').textContent = ORDERS.filter(o=>o.status==='Pending').length;
 }
-function admUpdateOrderStatus(id,status){
-  const o=ADM_ORDERS.find(x=>x.id===id); if(o){ o.status=status; admSaveData(); admRenderDashboard(); showToast('Order: '+status); }
+function filterOrders(f){ ordersFilter=f; renderOrdersTable(); }
+function updateOrderStatus(id,status){
+  const o=ORDERS.find(x=>x.id===id); if(o){ o.status=status; saveData(); renderDashboard(); showAToast('Order status updated to '+status); }
 }
+function viewOrder(id){ const o=ORDERS.find(x=>x.id===id); if(o) alert(`Order #${o.id}\nCustomer: ${o.customer}\nTotal: Rs.${o.total.toLocaleString()}\nStatus: ${o.status}\nPayment: ${o.payment}\nDate: ${o.date}`); }
 
-// ====== CONSULTATIONS ======
-function admRenderConsults(){
-  const f=document.getElementById('adm-consult-filter').value;
-  const list=f==='all'?ADM_CONSULTS:ADM_CONSULTS.filter(c=>c.status===f);
-  document.getElementById('adm-consults-body').innerHTML=list.map(c=>`
+// ======================================
+// CONSULTATIONS TABLE
+// ======================================
+let consultFilter='all';
+function renderConsultTable(){
+  const list = consultFilter==='all'?CONSULTS:CONSULTS.filter(c=>c.status===consultFilter);
+  document.getElementById('consultBody').innerHTML = list.map(c=>`
     <tr>
-      <td style="font-weight:700;color:#2d6a4f">#${c.id}</td>
+      <td style="font-weight:700;color:var(--g3)">#${c.id}</td>
       <td>${c.customer}</td>
       <td>${c.expert}</td>
-      <td style="font-size:.8rem">${c.type}</td>
+      <td style="font-size:.82rem">${c.type}</td>
       <td>${c.date}</td>
-      <td><select onchange="admUpdateConsultStatus(${c.id},this.value)" style="border:1px solid #e0ead8;border-radius:6px;padding:4px 8px;font-family:'Jost',sans-serif;font-size:.78rem;outline:none">${['Pending','Confirmed','Completed','Cancelled'].map(s=>`<option${s===c.status?' selected':''}>${s}</option>`).join('')}</select></td>
-      <td><button class="adm-act-btn adm-del" onclick="admDeleteConsult(${c.id})">🗑</button></td>
-    </tr>`).join('');
-  document.getElementById('admBadgeConsult').textContent=ADM_CONSULTS.filter(c=>c.status==='Pending').length;
+      <td>${c.time}</td>
+      <td>
+        <select onchange="updateConsultStatus(${c.id},this.value)" style="border:1px solid var(--border);border-radius:6px;padding:4px 8px;font-family:'Jost',sans-serif;font-size:.78rem;outline:none">
+          ${['Pending','Confirmed','Completed','Cancelled'].map(s=>`<option${s===c.status?' selected':''}>${s}</option>`).join('')}
+        </select>
+      </td>
+      <td><button class="act-btn act-del" onclick="deleteConsult(${c.id})">🗑</button></td>
+    </tr>
+  `).join('');
+  document.getElementById('badgeConsult').textContent = CONSULTS.filter(c=>c.status==='Pending').length;
 }
-function admUpdateConsultStatus(id,status){
-  const c=ADM_CONSULTS.find(x=>x.id===id); if(c){ c.status=status; admSaveData(); admRenderDashboard(); showToast('Session: '+status); }
+function filterConsultations(f){ consultFilter=f; renderConsultTable(); }
+function updateConsultStatus(id,status){
+  const c=CONSULTS.find(x=>x.id===id); if(c){ c.status=status; saveData(); renderDashboard(); showAToast('Consultation status updated to '+status); }
 }
-function admDeleteConsult(id){ ADM_CONSULTS=ADM_CONSULTS.filter(c=>c.id!==id); admSaveData(); admRenderConsults(); showToast('Removed.'); }
+function deleteConsult(id){ CONSULTS=CONSULTS.filter(c=>c.id!==id); saveData(); renderConsultTable(); showAToast('Consultation removed.','error'); }
 
-// ====== EXPERTS ======
-function admRenderExperts(){
-  document.getElementById('adm-experts-grid').innerHTML=ADM_EXPERTS.map(e=>`
-    <div style="background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 2px 12px rgba(14,35,24,.07);border:1px solid #e0ead8">
-      <div style="height:190px;overflow:hidden"><img src="${e.img}" style="width:100%;height:100%;object-fit:cover" alt="${e.name}"></div>
-      <div style="padding:16px 18px">
-        <div style="font-family:'Cormorant Garamond',serif;font-size:1.15rem;color:#0e2318;font-weight:600;margin-bottom:2px">${e.name}</div>
-        <div style="font-size:.76rem;color:#6b8070;margin-bottom:8px">${e.spec}</div>
-        <div style="font-size:.76rem;color:#6b8070">📧 ${e.email}</div>
-        <div style="font-size:.76rem;color:#6b8070;margin-top:2px">📞 ${e.phone}</div>
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-top:10px">
-          <span style="color:#e9b84b;font-size:.82rem">${'★'.repeat(Math.floor(e.rating))} ${e.rating}</span>
-          <span style="font-size:.7rem;padding:3px 10px;border-radius:50px;background:#d8f3dc;color:#2d6a4f">✅ Available</span>
+// ======================================
+// EXPERTS GRID
+// ======================================
+function renderExpertsGrid(){
+  document.getElementById('expertsGrid').innerHTML = EXPERTS.map(e=>`
+    <div style="background:#fff;border-radius:18px;overflow:hidden;box-shadow:0 3px 16px rgba(14,35,24,.07);border:1px solid var(--border)">
+      <div style="height:200px;overflow:hidden"><img src="${e.img}" style="width:100%;height:100%;object-fit:cover" alt="${e.name}"></div>
+      <div style="padding:18px 20px">
+        <div style="font-family:'Cormorant Garamond',serif;font-size:1.2rem;color:var(--g1);font-weight:600;margin-bottom:3px">${e.name}</div>
+        <div style="font-size:.78rem;color:var(--txt3);margin-bottom:8px">${e.spec}</div>
+        <div style="font-size:.78rem;color:var(--txt3)">📧 ${e.email}</div>
+        <div style="font-size:.78rem;color:var(--txt3);margin-top:2px">📞 ${e.phone}</div>
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-top:12px">
+          <span style="color:#e9b84b;font-size:.85rem">${'★'.repeat(Math.floor(e.rating))} ${e.rating}</span>
+          <span style="font-size:.72rem;padding:3px 12px;border-radius:50px;background:${e.avail?'var(--g6)':'#ffe8e8'};color:${e.avail?'var(--g3)':'var(--red)'}">${e.avail?'✅ Available':'❌ Unavailable'}</span>
         </div>
       </div>
-    </div>`).join('');
+    </div>
+  `).join('');
 }
-function admOpenExpertModal(){ document.getElementById('admExpertModal').classList.add('open'); }
-function admCloseExpertModal(){ document.getElementById('admExpertModal').classList.remove('open'); }
-function admSaveExpert(){
-  const name=document.getElementById('admEName').value.trim();
-  if(!name){ showToast('Name required'); return; }
-  ADM_EXPERTS.push({id:Date.now(),name,spec:document.getElementById('admESpec').value,email:document.getElementById('admEEmail').value,phone:document.getElementById('admEPhone').value,rating:5.0,img:document.getElementById('admEImg').value||'https://images.unsplash.com/photo-1594744803329-e58b31de8bf5?w=300'});
-  admCloseExpertModal(); admRenderExperts(); showToast('Expert added!');
+function openExpertModal(){ document.getElementById('expertModal').classList.add('open'); }
+function closeExpertModal(){ document.getElementById('expertModal').classList.remove('open'); }
+function saveExpert(){
+  const name=document.getElementById('eName').value.trim();
+  if(!name){ showAToast('Name required','error'); return; }
+  EXPERTS.push({id:Date.now(),name,spec:document.getElementById('eSpec').value,email:document.getElementById('eEmail').value,phone:document.getElementById('ePhone').value,rating:5.0,avail:true,img:document.getElementById('eImg').value||'https://images.unsplash.com/photo-1594744803329-e58b31de8bf5?w=300'});
+  closeExpertModal(); renderExpertsGrid(); showAToast('✅ Expert added!');
 }
 
-// ====== CUSTOMERS ======
-function admRenderCustomers(){
-  document.getElementById('adm-customers-body').innerHTML=ADM_CUSTOMERS.map(c=>`
+// ======================================
+// CUSTOMERS TABLE
+// ======================================
+function renderCustomersTable(){
+  document.getElementById('customersBody').innerHTML = CUSTOMERS.map(c=>`
     <tr>
-      <td style="font-weight:600;color:#2d6a4f">#${c.id}</td>
+      <td style="font-weight:600;color:var(--g3)">#${c.id}</td>
       <td style="font-weight:500">${c.name}</td>
       <td style="font-size:.82rem">${c.email}</td>
+      <td>${c.phone}</td>
       <td>${c.city}</td>
       <td style="font-weight:600">${c.orders}</td>
       <td style="font-size:.82rem">${c.joined}</td>
-      <td><button class="adm-act-btn adm-del" onclick="admDeleteCustomer(${c.id})">🗑</button></td>
-    </tr>`).join('');
+      <td style="display:flex;gap:6px;padding:10px 12px">
+        <button class="act-btn act-view">👁 View</button>
+        <button class="act-btn act-del" onclick="deleteCustomer(${c.id})">🗑</button>
+      </td>
+    </tr>
+  `).join('');
 }
-function admDeleteCustomer(id){ ADM_CUSTOMERS=ADM_CUSTOMERS.filter(c=>c.id!==id); admRenderCustomers(); showToast('Customer removed.'); }
+function deleteCustomer(id){ CUSTOMERS=CUSTOMERS.filter(c=>c.id!==id); renderCustomersTable(); showAToast('Customer removed.','error'); }
 
-// Close admin sub-modals on overlay click
-['admPlantModal','admSupplyModal','admExpertModal'].forEach(id=>{
-  const el=document.getElementById(id);
-  if(el) el.addEventListener('click',function(e){ if(e.target===this) this.classList.remove('open'); });
+// ======================================
+// TOAST
+// ======================================
+function showAToast(msg, type='ok'){
+  const t = document.getElementById('aToast');
+  t.textContent = msg;
+  t.className = 'toast show '+ type;
+  clearTimeout(window._at);
+  window._at = setTimeout(()=>t.classList.remove('show'),3000);
+}
+
+// Enter key on login
+document.getElementById('adminPass').addEventListener('keydown', e => { if(e.key==='Enter') adminLogin(); });
+
+// Close modals on overlay click
+['plantModal','supplyModal','expertModal'].forEach(id=>{
+  document.getElementById(id).addEventListener('click', function(e){ if(e.target===this) this.classList.remove('open'); });
 });
-
-renderPlants('all');
-renderSupplies();
-updateCartBadge();
 </script>
 </body>
 </html>
